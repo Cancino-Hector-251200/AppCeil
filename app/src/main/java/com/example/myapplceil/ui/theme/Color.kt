@@ -16,3 +16,7 @@ val MagentaNeon = Color(0xFFFF00FF)
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 val GrayInput = Color(0xFFF5F5F5)
+
+val BackgroundScreen = Color(0xFFF4F6F8)
+val BlueDark = Color(0xFF0B132B)
+val PinkMain = Color(0xFFFF00FF)

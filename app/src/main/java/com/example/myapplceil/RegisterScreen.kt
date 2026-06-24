@@ -51,7 +51,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(NavyDark)
+            .background(BackgroundScreen)
     ) {
         Column(
             modifier = Modifier
@@ -62,19 +62,19 @@ fun RegisterScreen(
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Logo Section (Reused from Login)
+            // Logo Section
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "CEIL",
                     style = TextStyle(
-                        color = Color.White,
+                        color = BlueDark,
                         fontSize = 56.sp,
                         fontWeight = FontWeight.Black,
                         shadow = Shadow(
-                            color = MagentaNeon,
-                            offset = Offset(8f, 8f),
+                            color = PinkMain.copy(alpha = 0.5f),
+                            offset = Offset(4f, 4f),
                             blurRadius = 0f
                         )
                     )
@@ -84,7 +84,7 @@ fun RegisterScreen(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
-                        .background(MagentaNeon),
+                        .background(PinkMain),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -98,11 +98,11 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Illustration: Hand with Credit Card (Line-art style)
+            // Illustration
             Icon(
                 imageVector = Icons.Outlined.Payments,
                 contentDescription = null,
-                tint = MagentaNeon,
+                tint = PinkMain,
                 modifier = Modifier.size(80.dp)
             )
 
@@ -110,8 +110,9 @@ fun RegisterScreen(
 
             // Form Card
             Card(
-                colors = CardDefaults.cardColors(containerColor = NavyLight),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
                 shape = RoundedCornerShape(24.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -119,8 +120,8 @@ fun RegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Registrate con nosotros",
-                        color = Color.White.copy(alpha = 0.7f),
+                        text = "Regístrate con nosotros",
+                        color = Color.Gray,
                         fontSize = 16.sp,
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
@@ -159,19 +160,17 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Gradient Button (As per image text "Iniciar Sesión")
+                    // Action Button
                     Button(
                         onClick = { onNavigateToDashboard() },
-                        contentPadding = PaddingValues(),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                        colors = ButtonDefaults.buttonColors(containerColor = PinkMain),
                         shape = RoundedCornerShape(30.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(55.dp)
-                            .background(brush = gradientBrush, shape = RoundedCornerShape(30.dp))
                     ) {
                         Text(
-                            text = "Iniciar Sesión",
+                            text = "Registrarse",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp
@@ -184,8 +183,8 @@ fun RegisterScreen(
 
             // Link to Login
             Text(
-                text = "Ya tienes cuenta?, inicia sesión aquí",
-                color = Color.White.copy(alpha = 0.8f),
+                text = "¿Ya tienes cuenta?, inicia sesión aquí",
+                color = BlueDark.copy(alpha = 0.7f),
                 textDecoration = TextDecoration.Underline,
                 fontSize = 13.sp,
                 textAlign = TextAlign.Center,
@@ -195,6 +194,7 @@ fun RegisterScreen(
             )
         }
     }
+
 }
 
 @Composable
@@ -209,29 +209,22 @@ fun RegisterInputField(
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
-            color = MagentaNeon,
+            color = PinkMain,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 4.dp)
         )
-        TextField(
+        OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp)),
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
             leadingIcon = {
                 Icon(imageVector = icon, contentDescription = null, tint = Color.Gray)
             },
             placeholder = { Text(text = placeholder, color = Color.Gray) },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                disabledContainerColor = Color.White,
-                cursorColor = Color.Black,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = PinkMain,
+                unfocusedBorderColor = Color.LightGray,
             ),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
             keyboardOptions = if (isPassword) KeyboardOptions(keyboardType = KeyboardType.Password) else KeyboardOptions.Default,

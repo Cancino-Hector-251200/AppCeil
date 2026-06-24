@@ -1,16 +1,18 @@
 package com.example.myapplceil
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,286 +23,293 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplceil.ui.theme.*
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+data class Transaction(
+    val id: Int,
+    val name: String,
+    val amount: String,
+    val categoryColor: Color
+)
+
 @Composable
 fun DashboardScreen() {
-    val scrollState = rememberScrollState()
-    val NavyCard = Color(0xFF151E3D)
-    val SuccessGreen = Color(0xFF4CAF50)
-    val ErrorRed = Color(0xFFF44336)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Scaffold(
-        bottomBar = { CeilBottomNavigation() },
-        containerColor = NavyDark
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 20.dp)
-                .verticalScroll(scrollState)
-        ) {
-            Spacer(modifier = Modifier.height(24.dp))
+    val transactions = listOf(
+        Transaction(1, "Comidas", "$50", Color.Red),
+        Transaction(2, "Transporte", "$20", Color.Cyan),
+        Transaction(3, "Suscripción", "$15", Color.Green),
+        Transaction(4, "Entretenimiento", "$40", Color.Yellow)
+    )
 
-            // --- Header Section ---
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = "Hola, Juan",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Nivel 5 - Ahorrador",
-                        color = Color.LightGray,
-                        fontSize = 12.sp
-                    )
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            CeilDrawerContent(
+                onCloseDrawer = { scope.launch { drawerState.close() } }
+            )
+        }
+    ) {
+        Scaffold(
+            containerColor = NavyDark,
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { /* Add Action */ },
+                    containerColor = MagentaNeon,
+                    contentColor = Color.White,
+                    shape = CircleShape
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Añadir")
                 }
-                Box(
+            }
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp)
+            ) {
+                // --- Tarjeta Superior de Presupuesto ---
+                Card(
                     modifier = Modifier
-                        .size(45.dp)
-                        .border(2.dp, MagentaNeon, CircleShape)
-                        .padding(3.dp)
-                        .clip(CircleShape)
-                        .background(Color.Gray)
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF151E3D))
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = "Profile",
-                        tint = Color.White,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // --- Primary Card: Daily Spending Limit ---
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = NavyCard)
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Disponible para hoy",
-                        color = Color.LightGray,
-                        fontSize = 14.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "$150.00",
-                        color = Color.White,
-                        fontSize = 42.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    LinearProgressIndicator(
-                        progress = { 0.7f },
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(12.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        color = MagentaNeon,
-                        trackColor = NavyDark
-                    )
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        // Fila Superior: Título e Iconos
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Monto total",
+                                color = Color.LightGray,
+                                fontSize = 16.sp
+                            )
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.DateRange,
+                                    contentDescription = "Fecha",
+                                    tint = Color.LightGray,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                // Icono de Menú de Hamburguesa para abrir el drawer
+                                IconButton(
+                                    onClick = { scope.launch { drawerState.open() } },
+                                    modifier = Modifier.size(24.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Menu,
+                                        contentDescription = "Menu Lateral",
+                                        tint = Color.LightGray
+                                    )
+                                }
+                            }
+                        }
+
+                        // Monto Central
+                        Text(
+                            text = "$1500",
+                            color = Color.White,
+                            fontSize = 48.sp,
+                            fontWeight = FontWeight.Black,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+
+                        // Fila Inferior: Editar y Botones +/-
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Editar",
+                                color = MagentaNeon,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Sumar",
+                                tint = MagentaNeon,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                imageVector = Icons.Default.Remove,
+                                contentDescription = "Restar",
+                                tint = MagentaNeon,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-            // --- Quick Actions Row ---
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                ActionButton(
-                    text = "Gasto",
-                    icon = Icons.Outlined.ArrowDownward,
-                    containerColor = ErrorRed.copy(alpha = 0.2f),
-                    contentColor = ErrorRed,
-                    modifier = Modifier.weight(1f)
+                // --- Encabezado de la Lista (Historial) ---
+                Text(
+                    text = "Historial",
+                    color = MagentaNeon,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
                 )
-                ActionButton(
-                    text = "Ingreso",
-                    icon = Icons.Outlined.ArrowUpward,
-                    containerColor = SuccessGreen.copy(alpha = 0.2f),
-                    contentColor = SuccessGreen,
-                    modifier = Modifier.weight(1f)
-                )
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // --- Debo y Me Deben Section ---
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = NavyCard)
-            ) {
+                // Cabecera de la Tabla
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "Debo", color = Color.White, fontSize = 12.sp)
-                        Text(text = "$50", color = ErrorRed, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    }
-                    Divider(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .width(1.dp),
-                        color = Color.Gray.copy(alpha = 0.3f)
-                    )
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "Me deben", color = Color.White, fontSize = 12.sp)
-                        Text(text = "$120", color = SuccessGreen, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(text = "Nombre de compra", color = Color.Gray, fontSize = 12.sp)
+                    Text(text = "$ Monto", color = Color.Gray, fontSize = 12.sp)
+                }
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = Color.Gray.copy(alpha = 0.2f)
+                )
+
+                // --- Lista de Gastos ---
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(transactions) { transaction ->
+                        TransactionItem(transaction)
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // --- Gamification: Reto Activo ---
-            OutlinedCard(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, MagentaNeon),
-                colors = CardDefaults.outlinedCardColors(containerColor = Color.Transparent)
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.EmojiEvents,
-                        contentDescription = "Challenge",
-                        tint = MagentaNeon,
-                        modifier = Modifier.size(32.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Reto: 3 días sin gasto hormiga",
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        LinearProgressIndicator(
-                            progress = { 0.66f },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(6.dp)
-                                .clip(RoundedCornerShape(3.dp)),
-                            color = MagentaNeon,
-                            trackColor = Color.Gray.copy(alpha = 0.3f)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(text = "2/3", color = MagentaNeon, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
 
 @Composable
-fun ActionButton(
-    text: String,
-    icon: ImageVector,
-    containerColor: Color,
-    contentColor: Color,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        onClick = { /* Action */ },
-        modifier = modifier.height(60.dp),
-        shape = RoundedCornerShape(16.dp),
-        color = containerColor
+fun CeilDrawerContent(onCloseDrawer: () -> Unit) {
+    ModalDrawerSheet(
+        drawerContainerColor = NavyDark,
+        drawerContentColor = Color.White,
+        drawerShape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp),
+        modifier = Modifier
+            .fillMaxHeight()
+            .width(300.dp)
     ) {
+        // --- Header del Menú ---
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = icon, contentDescription = text, tint = contentColor)
+            IconButton(onClick = onCloseDrawer) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Atrás",
+                    tint = Color.LightGray
+                )
+            }
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = text, color = contentColor, fontWeight = FontWeight.Bold)
+            Text(
+                text = "Menu",
+                color = MagentaNeon,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
+
+        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // --- Lista de Opciones ---
+        CeilDrawerItem(icon = Icons.Default.Person, label = "Perfil")
+        CeilDrawerItem(icon = Icons.Default.EmojiEvents, label = "Medallas/Logros")
+        CeilDrawerItem(icon = Icons.Default.SwapHoriz, label = "Me deben y debo")
+        CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas")
+        CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados")
+        CeilDrawerItem(icon = Icons.Default.Help, label = "Ayuda")
     }
 }
 
 @Composable
-fun CeilBottomNavigation() {
-    NavigationBar(
-        containerColor = Color(0xFF0B132B), // NavyDark
-        tonalElevation = 8.dp
+fun CeilDrawerItem(icon: ImageVector, label: String) {
+    NavigationDrawerItem(
+        icon = { Icon(imageVector = icon, contentDescription = null, tint = MagentaNeon) },
+        label = { Text(text = label, color = Color.White, fontWeight = FontWeight.Medium) },
+        selected = false,
+        onClick = { /* Handle navigation here */ },
+        colors = NavigationDrawerItemDefaults.colors(
+            unselectedContainerColor = Color.Transparent,
+            selectedContainerColor = MagentaNeon.copy(alpha = 0.1f)
+        ),
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+    )
+}
+
+@Composable
+fun TransactionItem(transaction: Transaction) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        NavigationBarItem(
-            icon = { Icon(Icons.Outlined.Home, contentDescription = "Home") },
-            label = { Text("Inicio") },
-            selected = true,
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = MagentaNeon,
-                selectedTextColor = MagentaNeon,
-                unselectedIconColor = Color.Gray,
-                unselectedTextColor = Color.Gray,
-                indicatorColor = Color.Transparent
-            ),
-            onClick = { }
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Outlined.Handshake, contentDescription = "Debts") },
-            label = { Text("Deudas") },
-            selected = false,
-            onClick = { }
-        )
-        // Middle Add Button
+        // Indicador de Categoría
         Box(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            contentAlignment = Alignment.Center
-        ) {
-            FloatingActionButton(
-                onClick = { },
-                containerColor = MagentaNeon,
-                contentColor = Color.White,
-                shape = CircleShape,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(Icons.Outlined.Add, contentDescription = "Add")
-            }
-        }
-        NavigationBarItem(
-            icon = { Icon(Icons.Outlined.EmojiEvents, contentDescription = "Rewards") },
-            label = { Text("Retos") },
-            selected = false,
-            onClick = { }
+                .size(12.dp)
+                .clip(CircleShape)
+                .background(transaction.categoryColor)
         )
-        NavigationBarItem(
-            icon = { Icon(Icons.Outlined.Person, contentDescription = "Profile") },
-            label = { Text("Perfil") },
-            selected = false,
-            onClick = { }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        // Nombre
+        Text(
+            text = transaction.name,
+            color = Color.White,
+            fontSize = 16.sp,
+            modifier = Modifier.weight(1f)
+        )
+
+        // Monto
+        Text(
+            text = transaction.amount,
+            color = Color.White,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        // Acciones
+        Icon(
+            imageVector = Icons.Default.Edit,
+            contentDescription = "Editar",
+            tint = Color.Gray,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = "Eliminar",
+            tint = Color.Red.copy(alpha = 0.7f),
+            modifier = Modifier.size(20.dp)
         )
     }
 }
