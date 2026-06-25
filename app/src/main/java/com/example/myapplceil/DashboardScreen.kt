@@ -1,5 +1,8 @@
 package com.example.myapplceil
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,8 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,12 +25,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.myapplceil.ui.theme.*
 import kotlinx.coroutines.launch
 
-// Colores del tema (en caso de que no carguen del theme)
+// Colores del tema futurista / financiero
 val NavyDark = Color(0xFF0B1120)
+val CardDark = Color(0xFF172033)
 val MagentaNeon = Color(0xFFF000D8)
+val PurpleNeon = Color(0xFF8B5CF6)
+val GreenNeon = Color(0xFF22C55E)
+val YellowNeon = Color(0xFFFACC15)
 
 data class Transaction(
     val id: Int,
@@ -82,42 +87,8 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                // Tarjeta de Presupuesto
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF151E3D))
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(20.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = "Monto total", color = Color.LightGray, fontSize = 16.sp)
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.LightGray)
-                            }
-                        }
-                        Text(
-                            text = "$1500",
-                            color = Color.White,
-                            fontSize = 48.sp,
-                            fontWeight = FontWeight.Black,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                            Text(text = "Editar", color = MagentaNeon, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                }
+                // Nueva Tarjeta de Dinero Principal
+                MoneyCard(onMenuOpen = { scope.launch { drawerState.open() } })
 
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(text = "Historial", color = MagentaNeon, fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -132,6 +103,194 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun MoneyCard(onMenuOpen: () -> Unit) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = CardDark),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            // Header: Título e Icono Editar
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "💰 Mi dinero", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
+                Row {
+                    IconButton(onClick = { isExpanded = !isExpanded }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Editar",
+                            tint = if (isExpanded) MagentaNeon else Color.LightGray
+                        )
+                    }
+                    IconButton(onClick = onMenuOpen) {
+                        Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.LightGray)
+                    }
+                }
+            }
+
+            AnimatedVisibility(visible = !isExpanded) {
+                Column {
+                    // Monto grande
+                    Text(
+                        text = "$1500",
+                        color = Color.White,
+                        fontSize = 48.sp,
+                        fontWeight = FontWeight.Black,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+
+                    // Chip de frecuencia
+                    FrequencyChip("Quincenal")
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Detalles de dinero
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(text = "Disponible actualmente", color = Color.LightGray, fontSize = 12.sp)
+                            Text(text = "$920", color = GreenNeon, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(text = "Presupuesto diario", color = Color.LightGray, fontSize = 12.sp)
+                            Text(text = "$85", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Barra de progreso de ahorro
+                    SavingsProgress(progress = 0.4f)
+                }
+            }
+
+            AnimatedVisibility(visible = isExpanded) {
+                ExpandedMoneyCard(onSave = { isExpanded = false })
+            }
+        }
+    }
+}
+
+@Composable
+fun FrequencyChip(label: String) {
+    Surface(
+        color = Color(0xFF2D1B4D), // Morado muy oscuro
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, MagentaNeon.copy(alpha = 0.3f))
+    ) {
+        Text(
+            text = "🗓 $label",
+            color = Color.White,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+fun SavingsProgress(progress: Float) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Ahorro", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+            Text(text = "${(progress * 100).toInt()}%", color = YellowNeon, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .clip(RoundedCornerShape(5.dp)),
+            color = YellowNeon,
+            trackColor = Color.White.copy(alpha = 0.1f),
+        )
+    }
+}
+
+@Composable
+fun ExpandedMoneyCard(onSave: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(text = "Editar ingreso", color = MagentaNeon, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+
+        OutlinedTextField(
+            value = "$1500",
+            onValueChange = {},
+            label = { Text("Monto", color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = MagentaNeon,
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        OutlinedTextField(
+            value = "Quincenal",
+            onValueChange = {},
+            label = { Text("Frecuencia", color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            trailingIcon = { Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = Color.White) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = MagentaNeon,
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        OutlinedTextField(
+            value = "$500",
+            onValueChange = {},
+            label = { Text("Meta de ahorro", color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = MagentaNeon,
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        Button(
+            onClick = onSave,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text("Guardar", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -186,4 +345,10 @@ fun TransactionItem(transaction: Transaction) {
         Text(text = transaction.name, color = Color.White, fontSize = 16.sp, modifier = Modifier.weight(1f))
         Text(text = transaction.amount, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium)
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DashboardPreview() {
+    DashboardScreen()
 }
