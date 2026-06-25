@@ -37,7 +37,7 @@ fun CeilNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "debts" // CAMBIADO A "debts" PARA QUE LA VEAS DE INMEDIATO
+        startDestination = "dashboard" // Cambiado a dashboard como inicio lógico
     ) {
         composable("login") {
             LoginScreen(
@@ -78,8 +78,13 @@ fun CeilNavigation() {
 
         composable("debts") {
             DebtScreen(onBack = { 
-                // Al estar como inicio, si das atrás no pasará nada o puedes volver al dashboard
-                navController.navigate("dashboard")
+                navController.popBackStack()
+            })
+        }
+
+        composable("graphics") {
+            GraphicsScreen(onBack = {
+                navController.popBackStack()
             })
         }
     }
