@@ -37,12 +37,13 @@ fun CeilNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "dashboard" // Cambiado a dashboard como inicio lógico
+        startDestination = "login" // Flujo comienza en Login
     ) {
+        // 1. LOGIN
         composable("login") {
             LoginScreen(
                 onNavigateToRegister = { navController.navigate("register") },
-                onNavigateToDashboard = {
+                onLoginSuccess = {
                     navController.navigate("dashboard") {
                         popUpTo("login") { inclusive = true }
                     }
@@ -50,17 +51,23 @@ fun CeilNavigation() {
             )
         }
 
+        // 2. REGISTRO
         composable("register") {
             RegisterScreen(
                 onNavigateToLogin = { navController.popBackStack() },
-                onNavigateToDashboard = { navController.navigate("privacy") }
+                onRegisterSuccess = { 
+                    // Después de registrarse, va a Privacidad
+                    navController.navigate("privacy") 
+                }
             )
         }
 
+        // 3. PRIVACIDAD
         composable("privacy") {
             PrivacyScreen(
                 onAceptarTerms = {
-                    navController.navigate("dashboard") {
+                    // Al aceptar, configuramos el presupuesto
+                    navController.navigate("budget_setup") {
                         popUpTo("login") { inclusive = true }
                     }
                 },
@@ -72,20 +79,47 @@ fun CeilNavigation() {
             )
         }
 
+        // 4. CONFIGURACIÓN DE PRESUPUESTO
+        composable("budget_setup") {
+            SetupBudgetScreen(
+                onSetupCompleto = { monto, dias ->
+                    // Configuración lista -> Al Dashboard
+                    navController.navigate("dashboard") {
+                        popUpTo("budget_setup") { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // 5. DASHBOARD (PANEL PRINCIPAL)
         composable("dashboard") {
             DashboardScreen(navController = navController)
         }
 
+        // 6. DEUDAS
         composable("debts") {
             DebtScreen(onBack = { 
                 navController.popBackStack()
             })
         }
 
+        // 7. GRÁFICAS
         composable("graphics") {
             GraphicsScreen(onBack = {
                 navController.popBackStack()
             })
+        }
+
+        // 8. PERFIL
+        composable("profile") {
+            ProfileScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo(0) // Limpia todo el historial
+                    }
+                }
+            )
         }
     }
 }

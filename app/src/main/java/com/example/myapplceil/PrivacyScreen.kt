@@ -30,11 +30,11 @@ fun PrivacyScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(NavyDark)
-            .padding(24.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(24.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -43,7 +43,7 @@ fun PrivacyScreen(
                 imageVector = Icons.Outlined.PrivacyTip,
                 contentDescription = null,
                 tint = MagentaNeon,
-                modifier = Modifier.size(64.dp)
+                modifier = Modifier.size(72.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -51,15 +51,15 @@ fun PrivacyScreen(
             Text(
                 text = "Aviso de Privacidad",
                 color = Color.White,
-                fontSize = 24.sp,
+                fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = NavyLight),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(24.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
@@ -67,45 +67,47 @@ fun PrivacyScreen(
                             "Al aceptar estos términos, permites que la aplicación gestione tu presupuesto diario " +
                             "de manera local y optimice tus hábitos de ahorro mediante retos gamificados. " +
                             "No compartimos tu información con terceros sin tu consentimiento explícito.",
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = Color.LightGray,
+                    fontSize = 16.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(20.dp)
+                    modifier = Modifier.padding(24.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             Button(
                 onClick = onAceptarTerms,
-                colors = ButtonDefaults.buttonColors(containerColor = PinkMain),
-                shape = RoundedCornerShape(25.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(55.dp)
             ) {
                 Text(
                     text = "Aceptar",
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedButton(
                 onClick = onRechazarTerms,
                 border = ButtonDefaults.outlinedButtonBorder.copy(
                     brush = androidx.compose.ui.graphics.SolidColor(Color.Gray)
                 ),
-                shape = RoundedCornerShape(25.dp),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(55.dp)
             ) {
                 Text(
                     text = "Rechazar",
-                    color = Color.Gray
+                    color = Color.LightGray,
+                    fontSize = 16.sp
                 )
             }
         }

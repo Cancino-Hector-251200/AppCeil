@@ -70,6 +70,12 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                         drawerState.close()
                         navController.navigate("graphics")
                     }
+                },
+                onNavigateToProfile = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("profile")
+                    }
                 }
             )
         }
@@ -305,7 +311,8 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
 fun CeilDrawerContent(
     onCloseDrawer: () -> Unit,
     onNavigateToDebts: () -> Unit,
-    onNavigateToGraphics: () -> Unit
+    onNavigateToGraphics: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     ModalDrawerSheet(
         drawerContainerColor = NavyDark,
@@ -324,7 +331,7 @@ fun CeilDrawerContent(
         HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
         Spacer(modifier = Modifier.height(16.dp))
 
-        CeilDrawerItem(icon = Icons.Default.Person, label = "Perfil", onClick = {})
+        CeilDrawerItem(icon = Icons.Default.Person, label = "Perfil", onClick = onNavigateToProfile)
         CeilDrawerItem(icon = Icons.Default.EmojiEvents, label = "Medallas", onClick = {})
         CeilDrawerItem(icon = Icons.Default.SwapHoriz, label = "Me deben y debo", onClick = onNavigateToDebts)
         CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas", onClick = onNavigateToGraphics)
