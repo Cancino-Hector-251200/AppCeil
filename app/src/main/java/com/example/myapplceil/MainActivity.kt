@@ -37,8 +37,14 @@ fun CeilNavigation() {
 
     NavHost(
         navController = navController,
+<<<<<<< HEAD
         startDestination = "login"
     ) {
+=======
+        startDestination = "login" // Flujo comienza en Login
+    ) {
+        // 1. LOGIN
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
         composable("login") {
             LoginScreen(
                 onNavigateToRegister = { navController.navigate("register") },
@@ -50,6 +56,7 @@ fun CeilNavigation() {
             )
         }
 
+<<<<<<< HEAD
         composable("register") {
             RegisterScreen(
                 onNavigateToLogin = { navController.popBackStack() },
@@ -60,6 +67,24 @@ fun CeilNavigation() {
         composable("privacy") {
             PrivacyScreen(
                 onAceptarTerms = {
+=======
+        // 2. REGISTRO
+        composable("register") {
+            RegisterScreen(
+                onNavigateToLogin = { navController.popBackStack() },
+                onRegisterSuccess = { 
+                    // Después de registrarse, va a Privacidad
+                    navController.navigate("privacy") 
+                }
+            )
+        }
+
+        // 3. PRIVACIDAD
+        composable("privacy") {
+            PrivacyScreen(
+                onAceptarTerms = {
+                    // Al aceptar, configuramos el presupuesto
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
                     navController.navigate("budget_setup") {
                         popUpTo("login") { inclusive = true }
                     }
@@ -72,9 +97,17 @@ fun CeilNavigation() {
             )
         }
 
+<<<<<<< HEAD
         composable("budget_setup") {
             SetupBudgetScreen(
                 onSetupCompleto = { _, _ ->
+=======
+        // 4. CONFIGURACIÓN DE PRESUPUESTO
+        composable("budget_setup") {
+            SetupBudgetScreen(
+                onSetupCompleto = { monto, dias ->
+                    // Configuración lista -> Al Dashboard
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
                     navController.navigate("dashboard") {
                         popUpTo("budget_setup") { inclusive = true }
                     }
@@ -82,10 +115,15 @@ fun CeilNavigation() {
             )
         }
 
+<<<<<<< HEAD
+=======
+        // 5. DASHBOARD (PANEL PRINCIPAL)
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
         composable("dashboard") {
             DashboardScreen(navController = navController)
         }
 
+<<<<<<< HEAD
         composable("debts") {
             DebtScreen(onBack = { navController.popBackStack() })
         }
@@ -94,16 +132,38 @@ fun CeilNavigation() {
             GraphicsScreen(onBack = { navController.popBackStack() })
         }
 
+=======
+        // 6. DEUDAS
+        composable("debts") {
+            DebtScreen(onBack = { 
+                navController.popBackStack()
+            })
+        }
+
+        // 7. GRÁFICAS
+        composable("graphics") {
+            GraphicsScreen(onBack = {
+                navController.popBackStack()
+            })
+        }
+
+        // 8. PERFIL
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
         composable("profile") {
             ProfileScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onLogout = {
                     navController.navigate("login") {
+<<<<<<< HEAD
                         popUpTo(0)
+=======
+                        popUpTo(0) // Limpia todo el historial
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
                     }
                 }
             )
         }
+<<<<<<< HEAD
 
         // --- MÓDULO APARTADOS ---
         composable("apartments") {
@@ -138,5 +198,7 @@ fun CeilNavigation() {
         composable("template_personal") { 
             PersonalGoalTemplateScreen(onBack = { navController.popBackStack() }) 
         }
+=======
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
     }
 }

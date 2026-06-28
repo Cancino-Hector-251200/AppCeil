@@ -4,7 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+<<<<<<< HEAD
 import androidx.compose.foundation.clickable
+=======
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -77,12 +80,15 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                         drawerState.close()
                         navController.navigate("profile")
                     }
+<<<<<<< HEAD
                 },
                 onNavigateToApartments = {
                     scope.launch {
                         drawerState.close()
                         navController.navigate("apartments")
                     }
+=======
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
                 }
             )
         }
@@ -109,6 +115,7 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                 // Nueva Tarjeta de Dinero Principal
                 MoneyCard(onMenuOpen = { scope.launch { drawerState.open() } })
 
+<<<<<<< HEAD
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // SECCIÓN DE ACCESO RÁPIDO A APARTADOS
@@ -131,6 +138,8 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                     )
                 }
 
+=======
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(text = "Historial", color = MagentaNeon, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -149,6 +158,7 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
 }
 
 @Composable
+<<<<<<< HEAD
 fun QuickAccessCard(title: String, icon: ImageVector, color: Color, modifier: Modifier, onClick: () -> Unit) {
     Card(
         modifier = modifier
@@ -170,6 +180,8 @@ fun QuickAccessCard(title: String, icon: ImageVector, color: Color, modifier: Mo
 }
 
 @Composable
+=======
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
 fun MoneyCard(onMenuOpen: () -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -311,9 +323,13 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 focusedBorderColor = MagentaNeon,
+<<<<<<< HEAD
                 unfocusedBorderColor = Color.Gray,
                 focusedContainerColor = CardDark,
                 unfocusedContainerColor = CardDark
+=======
+                unfocusedBorderColor = Color.Gray
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
             )
         )
 
@@ -328,9 +344,13 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 focusedBorderColor = MagentaNeon,
+<<<<<<< HEAD
                 unfocusedBorderColor = Color.Gray,
                 focusedContainerColor = CardDark,
                 unfocusedContainerColor = CardDark
+=======
+                unfocusedBorderColor = Color.Gray
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
             )
         )
 
@@ -344,9 +364,13 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 focusedBorderColor = MagentaNeon,
+<<<<<<< HEAD
                 unfocusedBorderColor = Color.Gray,
                 focusedContainerColor = CardDark,
                 unfocusedContainerColor = CardDark
+=======
+                unfocusedBorderColor = Color.Gray
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
             )
         )
 
@@ -368,8 +392,12 @@ fun CeilDrawerContent(
     onCloseDrawer: () -> Unit,
     onNavigateToDebts: () -> Unit,
     onNavigateToGraphics: () -> Unit,
+<<<<<<< HEAD
     onNavigateToProfile: () -> Unit,
     onNavigateToApartments: () -> Unit
+=======
+    onNavigateToProfile: () -> Unit
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
 ) {
     ModalDrawerSheet(
         drawerContainerColor = NavyDark,
@@ -392,7 +420,11 @@ fun CeilDrawerContent(
         CeilDrawerItem(icon = Icons.Default.EmojiEvents, label = "Medallas", onClick = {})
         CeilDrawerItem(icon = Icons.Default.SwapHoriz, label = "Me deben y debo", onClick = onNavigateToDebts)
         CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas", onClick = onNavigateToGraphics)
+<<<<<<< HEAD
         CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados", onClick = onNavigateToApartments)
+=======
+        CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados", onClick = {})
+>>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
     }
 }
 
