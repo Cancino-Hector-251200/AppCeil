@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.example.myapplceil.ui.theme.*
 
 @Composable
 fun EntertainmentTemplateScreen(onBack: () -> Unit = {}) {

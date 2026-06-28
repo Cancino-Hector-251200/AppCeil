@@ -8,9 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Savings
-import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplceil.ui.theme.*
 
 @Composable
 fun SavingsApartmentScreen(onBack: () -> Unit = {}) {
@@ -82,7 +83,7 @@ fun SavingsApartmentScreen(onBack: () -> Unit = {}) {
                     SavingsCard(
                         title = "Meta mensual",
                         value = "$$monthlyContribution",
-                        icon = Icons.Default.TrendingUp,
+                        icon = Icons.AutoMirrored.Filled.TrendingUp,
                         color = GreenNeon,
                         modifier = Modifier.weight(1f)
                     )
@@ -105,7 +106,7 @@ fun SavingsApartmentScreen(onBack: () -> Unit = {}) {
                     colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("Aportar a la meta", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text("Aportar a la meta", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
                 }
             }
         }
@@ -157,7 +158,6 @@ fun SavingGoalCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Renombrado para evitar conflictos con DashboardScreen.kt
             SavingsGoalProgressBar(progress = progress)
 
             Spacer(modifier = Modifier.height(16.dp))

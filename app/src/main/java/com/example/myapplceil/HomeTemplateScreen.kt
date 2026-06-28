@@ -1,5 +1,6 @@
 package com.example.myapplceil
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -9,6 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+// IMPORTAMOS LOS COLORES UNIFICADOS
+import com.example.myapplceil.ui.theme.*
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -40,7 +43,12 @@ fun HomeTemplateScreen(onBack: () -> Unit = {}) {
                             selected = service in listOf("🏠 Renta", "💡 Luz", "🚿 Agua", "🌐 Internet"),
                             onClick = {},
                             label = { Text(service, fontSize = 12.sp) },
-                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = PurpleNeon, containerColor = CardDark)
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = PurpleNeon, 
+                                containerColor = CardDark,
+                                labelColor = Color.Gray,
+                                selectedLabelColor = Color.White
+                            )
                         )
                     }
                 }
@@ -63,8 +71,8 @@ fun HomeTemplateScreen(onBack: () -> Unit = {}) {
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = PurpleNeon.copy(alpha = 0.1f)),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, PurpleNeon)
+                    colors = CardDefaults.cardColors(containerColor = CardDark),
+                    border = BorderStroke(1.dp, PurpleNeon)
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp).fillMaxWidth(),
@@ -82,9 +90,9 @@ fun HomeTemplateScreen(onBack: () -> Unit = {}) {
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = PurpleNeon)
                 ) {
-                    Text("Configurar gastos de casa")
+                    Text("Configurar gastos de casa", color = Color.White, fontWeight = FontWeight.Bold)
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(Modifier.height(20.dp))
             }
         }
     }

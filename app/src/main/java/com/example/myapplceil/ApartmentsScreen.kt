@@ -1,8 +1,5 @@
 package com.example.myapplceil
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,14 +20,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-// Colores extra para Apartados
-val RedNeon = Color(0xFFEF4444)
+// IMPORTANTE: Importamos los colores desde el nuevo paquete theme
+import com.example.myapplceil.ui.theme.*
 
 data class ApartmentTemplate(
     val icon: String,
     val name: String,
-    val description: String,
     val route: String
 )
 
@@ -46,316 +41,118 @@ data class Apartment(
 @Composable
 fun ApartmentsScreen(
     onBack: () -> Unit = {},
-    onCreateNew: () -> Unit = {},
-    onSelectApartment: (Int) -> Unit = {},
-    onNavigateToTemplate: (String) -> Unit = {} // Navegación dinámica por ruta
+    onNavigateToTemplate: (String) -> Unit = {},
+    onSelectApartment: (Int) -> Unit = {}
 ) {
     val templates = listOf(
-        ApartmentTemplate("📚", "Proyecto escolar", "Materiales y transporte", "template_school"),
-        ApartmentTemplate("🏠", "Casa", "Renta y servicios", "template_home"),
-        ApartmentTemplate("💰", "Ahorro", "Metas de ahorro", "template_savings"),
-        ApartmentTemplate("🎮", "Entretenimiento", "Streaming y juegos", "template_entertainment"),
-        ApartmentTemplate("🍔", "Comida", "Dieta y universidad", "template_food"),
-        ApartmentTemplate("🚀", "Meta Personal", "Cualquier objetivo", "template_personal")
+        ApartmentTemplate("💰", "Ahorro", "template_savings"),
+        ApartmentTemplate("🎮", "Entretenimiento", "template_entertainment"),
+        ApartmentTemplate("📚", "Escolar", "template_school"),
+        ApartmentTemplate("🏠", "Casa", "template_home"),
+        ApartmentTemplate("🍔", "Comida", "template_food"),
+        ApartmentTemplate("🚀", "Meta", "template_personal")
     )
 
     val myApartments = listOf(
-        Apartment(1, "Proyecto final", Icons.Default.MenuBook, 1000.0, 350.0, PurpleNeon),
-        Apartment(2, "Comida semana", Icons.Default.Restaurant, 500.0, 420.0, YellowNeon),
-        Apartment(3, "Viaje", Icons.Default.Flight, 2000.0, 1500.0, GreenNeon)
+        Apartment(1, "Laptop Gamer", Icons.Default.Laptop, 15000.0, 4500.0, MagentaNeon),
+        Apartment(2, "Proyecto IoT", Icons.Default.Memory, 1200.0, 800.0, PurpleNeon),
+        Apartment(3, "Comida semanal", Icons.Default.Restaurant, 700.0, 450.0, YellowNeon)
     )
 
     Scaffold(
         containerColor = NavyDark,
         topBar = {
-            ApartmentsHeader(onBack = onBack, onCreate = onCreateNew)
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás", tint = Color.White)
+                    }
+                    Text(text = "📁 Apartados", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                }
+                Text(text = "  Organiza tu dinero", color = Color.Gray, fontSize = 16.sp, modifier = Modifier.padding(start = 12.dp))
+            }
         }
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item {
-                Text(
-                    text = "Organiza tu dinero por objetivos",
-                    color = Color.LightGray,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            }
-
-            item {
-                CreateApartmentButton(onClick = { onNavigateToTemplate("template_personal") })
-            }
-
-            item {
-                SectionHeader("Planear con plantillas")
-                Spacer(modifier = Modifier.height(12.dp))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth()
+                Button(
+                    onClick = { onNavigateToTemplate("template_personal") },
+                    modifier = Modifier.fillMaxWidth().height(60.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = CardDark)
                 ) {
-                    items(templates) { template ->
-                        TemplateCard(
-                            template = template,
-                            onClick = { onNavigateToTemplate(template.route) }
-                        )
-                    }
+                    Icon(Icons.Default.Add, contentDescription = null, tint = MagentaNeon)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Crear apartado", color = MagentaNeon, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
             item {
-                SectionHeader("Mis apartados activos")
+                SectionHeader("Plantillas rápidas")
+                Spacer(modifier = Modifier.height(12.dp))
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    items(templates) { template ->
+                        TemplateCard(template, onClick = { onNavigateToTemplate(template.route) })
+                    }
+                }
             }
 
+            item { SectionHeader("Mis apartados activos") }
             items(myApartments) { apartment ->
-                ApartmentCard(
-                    apartment = apartment,
-                    onClick = { onSelectApartment(apartment.id) }
-                )
+                ApartmentCard(apartment, onClick = { onSelectApartment(apartment.id) })
             }
-
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-            }
+            
+            item { Spacer(modifier = Modifier.height(32.dp)) }
         }
     }
-}
-
-@Composable
-fun ApartmentsHeader(onBack: () -> Unit, onCreate: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás", tint = Color.White)
-            }
-            Text(
-                text = "Apartados",
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        IconButton(
-            onClick = onCreate,
-            modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
-                .background(CardDark)
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Añadir", tint = MagentaNeon)
-        }
-    }
-}
-
-@Composable
-fun CreateApartmentButton(onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = CardDark),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MagentaNeon.copy(alpha = 0.5f))
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(Icons.Default.AddCircle, contentDescription = null, tint = MagentaNeon, modifier = Modifier.size(28.dp))
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "Crear meta personalizada",
-                color = MagentaNeon,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-@Composable
-fun SectionHeader(title: String) {
-    Text(
-        text = title,
-        color = Color.White,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold
-    )
 }
 
 @Composable
 fun TemplateCard(template: ApartmentTemplate, onClick: () -> Unit) {
     Card(
-        modifier = Modifier
-            .width(160.dp)
-            .height(180.dp)
-            .clickable { onClick() },
+        modifier = Modifier.width(130.dp).height(150.dp).clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = CardDark)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MagentaNeon.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = template.icon, fontSize = 24.sp)
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(modifier = Modifier.size(50.dp).background(MagentaNeon.copy(alpha = 0.1f), RoundedCornerShape(15.dp)), contentAlignment = Alignment.Center) {
+                Text(template.icon, fontSize = 28.sp)
             }
-            Column {
-                Text(
-                    text = template.name,
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = template.description,
-                    color = Color.Gray,
-                    fontSize = 11.sp,
-                    lineHeight = 14.sp
-                )
-            }
+            Spacer(Modifier.height(12.dp))
+            Text(template.name, color = Color.White, fontWeight = FontWeight.Bold)
         }
     }
 }
 
 @Composable
 fun ApartmentCard(apartment: Apartment, onClick: () -> Unit) {
-    var visible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { visible = true }
-
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(animationSpec = tween(600)) + slideInVertically(initialOffsetY = { it / 2 })
+    Card(
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = CardDark)
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onClick() },
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = CardDark)
-        ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(apartment.color.copy(alpha = 0.2f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(apartment.icon, contentDescription = null, tint = apartment.color)
-                        }
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = apartment.name,
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    Row {
-                        IconButton(onClick = { /* Edit */ }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Editar", tint = Color.Gray, modifier = Modifier.size(20.dp))
-                        }
-                        IconButton(onClick = { /* Delete */ }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = RedNeon, modifier = Modifier.size(20.dp))
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text(text = "Presupuesto", color = Color.Gray, fontSize = 12.sp)
-                        Text(text = "$${apartment.budget}", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(text = "Disponible", color = Color.Gray, fontSize = 12.sp)
-                        Text(text = "$${apartment.budget - apartment.spent}", color = GreenNeon, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                BudgetProgressBar(
-                    progress = (apartment.spent / apartment.budget).toFloat(),
-                    color = apartment.color
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Gastado: $${apartment.spent}",
-                    color = Color.LightGray,
-                    fontSize = 12.sp
-                )
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(apartment.icon, contentDescription = null, tint = apartment.color, modifier = Modifier.size(24.dp))
+                Spacer(Modifier.width(12.dp))
+                Text(apartment.name, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            }
+            Spacer(Modifier.height(16.dp))
+            val progress = (apartment.spent / apartment.budget).toFloat()
+            ProgressBar(progress, apartment.color)
+            Spacer(Modifier.height(8.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Gastado: $${apartment.spent.toInt()}", color = Color.Gray, fontSize = 12.sp)
+                Text("Meta: $${apartment.budget.toInt()}", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
 }
 
 @Composable
-fun BudgetProgressBar(progress: Float, color: Color) {
-    val animatedProgress by animateFloatAsState(
-        targetValue = progress.coerceIn(0f, 1f),
-        animationSpec = tween(durationMillis = 1000),
-        label = "progress"
-    )
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(12.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .background(Color.White.copy(alpha = 0.1f))
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(animatedProgress)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(color)
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Text(
-                text = "${(progress * 100).toInt()}%",
-                color = color,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
+fun SectionHeader(title: String) {
+    Text(text = title, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
 }

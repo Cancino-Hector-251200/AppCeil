@@ -4,10 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-<<<<<<< HEAD
-import androidx.compose.foundation.clickable
-=======
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,14 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
-
-// Colores del tema futurista / financiero
-val NavyDark = Color(0xFF0B1120)
-val CardDark = Color(0xFF172033)
-val MagentaNeon = Color(0xFFF000D8)
-val PurpleNeon = Color(0xFF8B5CF6)
-val GreenNeon = Color(0xFF22C55E)
-val YellowNeon = Color(0xFFFACC15)
+// IMPORTACIÓN GLOBAL DEL TEMA
+import com.example.myapplceil.ui.theme.*
 
 data class Transaction(
     val id: Int,
@@ -80,15 +70,12 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                         drawerState.close()
                         navController.navigate("profile")
                     }
-<<<<<<< HEAD
                 },
                 onNavigateToApartments = {
                     scope.launch {
                         drawerState.close()
                         navController.navigate("apartments")
                     }
-=======
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
                 }
             )
         }
@@ -112,34 +99,8 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                // Nueva Tarjeta de Dinero Principal
                 MoneyCard(onMenuOpen = { scope.launch { drawerState.open() } })
 
-<<<<<<< HEAD
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // SECCIÓN DE ACCESO RÁPIDO A APARTADOS
-                Text(text = "Accesos rápidos", color = Color.Gray, fontSize = 14.sp)
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    QuickAccessCard(
-                        title = "Apartados",
-                        icon = Icons.Default.Folder,
-                        color = PurpleNeon,
-                        modifier = Modifier.weight(1f),
-                        onClick = { navController.navigate("apartments") }
-                    )
-                    QuickAccessCard(
-                        title = "Gráficas",
-                        icon = Icons.Default.PieChart,
-                        color = MagentaNeon,
-                        modifier = Modifier.weight(1f),
-                        onClick = { navController.navigate("graphics") }
-                    )
-                }
-
-=======
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(text = "Historial", color = MagentaNeon, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -158,30 +119,6 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
 }
 
 @Composable
-<<<<<<< HEAD
-fun QuickAccessCard(title: String, icon: ImageVector, color: Color, modifier: Modifier, onClick: () -> Unit) {
-    Card(
-        modifier = modifier
-            .height(100.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = CardDark)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(28.dp))
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = title, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-        }
-    }
-}
-
-@Composable
-=======
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
 fun MoneyCard(onMenuOpen: () -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -194,7 +131,6 @@ fun MoneyCard(onMenuOpen: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            // Header: Título e Icono Editar
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -219,7 +155,6 @@ fun MoneyCard(onMenuOpen: () -> Unit) {
 
             AnimatedVisibility(visible = !isExpanded) {
                 Column {
-                    // Monto grande
                     Text(
                         text = "$1500",
                         color = Color.White,
@@ -227,13 +162,8 @@ fun MoneyCard(onMenuOpen: () -> Unit) {
                         fontWeight = FontWeight.Black,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
-
-                    // Chip de frecuencia
                     FrequencyChip("Quincenal")
-
                     Spacer(modifier = Modifier.height(24.dp))
-
-                    // Detalles de dinero
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -247,10 +177,7 @@ fun MoneyCard(onMenuOpen: () -> Unit) {
                             Text(text = "$85", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-
                     Spacer(modifier = Modifier.height(24.dp))
-
-                    // Barra de progreso de ahorro
                     SavingsProgress(progress = 0.4f)
                 }
             }
@@ -265,7 +192,7 @@ fun MoneyCard(onMenuOpen: () -> Unit) {
 @Composable
 fun FrequencyChip(label: String) {
     Surface(
-        color = Color(0xFF2D1B4D), // Morado muy oscuro
+        color = Color(0xFF2D1B4D),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, MagentaNeon.copy(alpha = 0.3f))
     ) {
@@ -312,7 +239,6 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(text = "Editar ingreso", color = MagentaNeon, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-
         OutlinedTextField(
             value = "$1500",
             onValueChange = {},
@@ -323,16 +249,9 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 focusedBorderColor = MagentaNeon,
-<<<<<<< HEAD
-                unfocusedBorderColor = Color.Gray,
-                focusedContainerColor = CardDark,
-                unfocusedContainerColor = CardDark
-=======
                 unfocusedBorderColor = Color.Gray
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
             )
         )
-
         OutlinedTextField(
             value = "Quincenal",
             onValueChange = {},
@@ -344,16 +263,9 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 focusedBorderColor = MagentaNeon,
-<<<<<<< HEAD
-                unfocusedBorderColor = Color.Gray,
-                focusedContainerColor = CardDark,
-                unfocusedContainerColor = CardDark
-=======
                 unfocusedBorderColor = Color.Gray
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
             )
         )
-
         OutlinedTextField(
             value = "$500",
             onValueChange = {},
@@ -364,16 +276,9 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 focusedBorderColor = MagentaNeon,
-<<<<<<< HEAD
-                unfocusedBorderColor = Color.Gray,
-                focusedContainerColor = CardDark,
-                unfocusedContainerColor = CardDark
-=======
                 unfocusedBorderColor = Color.Gray
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
             )
         )
-
         Button(
             onClick = onSave,
             modifier = Modifier
@@ -392,12 +297,8 @@ fun CeilDrawerContent(
     onCloseDrawer: () -> Unit,
     onNavigateToDebts: () -> Unit,
     onNavigateToGraphics: () -> Unit,
-<<<<<<< HEAD
     onNavigateToProfile: () -> Unit,
     onNavigateToApartments: () -> Unit
-=======
-    onNavigateToProfile: () -> Unit
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
 ) {
     ModalDrawerSheet(
         drawerContainerColor = NavyDark,
@@ -420,11 +321,7 @@ fun CeilDrawerContent(
         CeilDrawerItem(icon = Icons.Default.EmojiEvents, label = "Medallas", onClick = {})
         CeilDrawerItem(icon = Icons.Default.SwapHoriz, label = "Me deben y debo", onClick = onNavigateToDebts)
         CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas", onClick = onNavigateToGraphics)
-<<<<<<< HEAD
         CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados", onClick = onNavigateToApartments)
-=======
-        CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados", onClick = {})
->>>>>>> f0989bdba44f2db0d81d7fe104b336f4af69c600
     }
 }
 

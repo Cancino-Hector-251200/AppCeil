@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.example.myapplceil.ui.theme.*
 
 @Composable
 fun SavingsTemplateScreen(onBack: () -> Unit = {}) {
@@ -70,7 +71,7 @@ fun SavingsTemplateScreen(onBack: () -> Unit = {}) {
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon)
                 ) {
-                    Text("Crear meta de ahorro")
+                    Text("Crear meta de ahorro", color = Color.White, fontWeight = FontWeight.Bold)
                 }
                 Spacer(Modifier.height(20.dp))
             }
