@@ -42,6 +42,7 @@ data class Transaction(
     val categoryColor: Color
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(navController: NavController = rememberNavController()) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -54,6 +55,7 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
         Transaction(4, "Entretenimiento", "$40", Color.Yellow)
     )
 
+    // ModalNavigationDrawer estándar (abre desde la izquierda por defecto)
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -76,12 +78,30 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                         drawerState.close()
                         navController.navigate("profile")
                     }
+                },
+                onNavigateToTerms = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("terms")
+                    }
                 }
             )
         }
     ) {
         Scaffold(
             containerColor = NavyDark,
+            topBar = {
+                TopAppBar(
+                    // Aquí colocamos el icono en la izquierda (navigationIcon)
+                    navigationIcon = {
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.LightGray)
+                        }
+                    },
+                    title = { Text("Resumen", color = Color.White, fontWeight = FontWeight.Bold) },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = NavyDark)
+                )
+            },
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = { /* Add Action */ },
@@ -99,11 +119,18 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                // Nueva Tarjeta de Dinero Principal
-                MoneyCard(onMenuOpen = { scope.launch { drawerState.open() } })
+                // Tarjeta de Dinero Principal
+                MoneyCard()
 
                 Spacer(modifier = Modifier.height(32.dp))
-                Text(text = "Historial", color = MagentaNeon, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+
+                Text(
+                    text = "Historial",
+                    color = MagentaNeon,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 LazyColumn(
@@ -120,7 +147,7 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
 }
 
 @Composable
-fun MoneyCard(onMenuOpen: () -> Unit) {
+fun MoneyCard() {
     var isExpanded by remember { mutableStateOf(false) }
 
     Card(
@@ -141,17 +168,12 @@ fun MoneyCard(onMenuOpen: () -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "💰 Mi dinero", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
-                Row {
-                    IconButton(onClick = { isExpanded = !isExpanded }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Editar",
-                            tint = if (isExpanded) MagentaNeon else Color.LightGray
-                        )
-                    }
-                    IconButton(onClick = onMenuOpen) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.LightGray)
-                    }
+                IconButton(onClick = { isExpanded = !isExpanded }) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Editar",
+                        tint = if (isExpanded) MagentaNeon else Color.LightGray
+                    )
                 }
             }
 
@@ -312,7 +334,8 @@ fun CeilDrawerContent(
     onCloseDrawer: () -> Unit,
     onNavigateToDebts: () -> Unit,
     onNavigateToGraphics: () -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    onNavigateToTerms: () -> Unit
 ) {
     ModalDrawerSheet(
         drawerContainerColor = NavyDark,
@@ -336,6 +359,7 @@ fun CeilDrawerContent(
         CeilDrawerItem(icon = Icons.Default.SwapHoriz, label = "Me deben y debo", onClick = onNavigateToDebts)
         CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas", onClick = onNavigateToGraphics)
         CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados", onClick = {})
+        CeilDrawerItem(icon = Icons.Default.PrivacyTip, label = "Privacidad", onClick = onNavigateToTerms)
     }
 }
 

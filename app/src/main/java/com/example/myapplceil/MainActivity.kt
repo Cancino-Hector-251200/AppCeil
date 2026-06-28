@@ -121,5 +121,12 @@ fun CeilNavigation() {
                 }
             )
         }
+
+        // 9. TÉRMINOS LEGALES (MENÚ)
+        composable("terms") {
+            MenuPrivacyScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
     }
 }

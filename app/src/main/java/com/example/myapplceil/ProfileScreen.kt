@@ -37,7 +37,7 @@ fun ProfileScreen(
     var nombre by remember { mutableStateOf("Usuario Ceil") }
     var edad by remember { mutableStateOf("20") }
     var sexo by remember { mutableStateOf("Masculino") }
-    var correo by remember { mutableStateOf("usuario@universidad.edu.mx") }
+    var correo by remember { mutableStateOf("usuario@example.com") }
     
     val opcionesSexo = listOf("Masculino", "Femenino", "Otro")
     var expandedSexo by remember { mutableStateOf(false) }
@@ -195,7 +195,7 @@ fun ProfileScreen(
 
             // Card: Correo
             ProfileCardField(
-                label = "Correo Institucional",
+                label = "Correo Electrónico",
                 value = correo,
                 onValueChange = { correo = it }
             )
