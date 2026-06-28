@@ -37,9 +37,8 @@ fun CeilNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "login" // Flujo comienza en Login
+        startDestination = "login"
     ) {
-        // 1. LOGIN
         composable("login") {
             LoginScreen(
                 onNavigateToRegister = { navController.navigate("register") },
@@ -51,22 +50,16 @@ fun CeilNavigation() {
             )
         }
 
-        // 2. REGISTRO
         composable("register") {
             RegisterScreen(
                 onNavigateToLogin = { navController.popBackStack() },
-                onRegisterSuccess = { 
-                    // Después de registrarse, va a Privacidad
-                    navController.navigate("privacy") 
-                }
+                onRegisterSuccess = { navController.navigate("privacy") }
             )
         }
 
-        // 3. PRIVACIDAD
         composable("privacy") {
             PrivacyScreen(
                 onAceptarTerms = {
-                    // Al aceptar, configuramos el presupuesto
                     navController.navigate("budget_setup") {
                         popUpTo("login") { inclusive = true }
                     }
@@ -79,11 +72,9 @@ fun CeilNavigation() {
             )
         }
 
-        // 4. CONFIGURACIÓN DE PRESUPUESTO
         composable("budget_setup") {
             SetupBudgetScreen(
-                onSetupCompleto = { monto, dias ->
-                    // Configuración lista -> Al Dashboard
+                onSetupCompleto = { _, _ ->
                     navController.navigate("dashboard") {
                         popUpTo("budget_setup") { inclusive = true }
                     }
@@ -91,56 +82,61 @@ fun CeilNavigation() {
             )
         }
 
-        // 5. DASHBOARD (PANEL PRINCIPAL)
         composable("dashboard") {
             DashboardScreen(navController = navController)
         }
 
-        // 6. DEUDAS
         composable("debts") {
-            DebtScreen(onBack = { 
-                navController.popBackStack()
-            })
+            DebtScreen(onBack = { navController.popBackStack() })
         }
 
-        // 7. GRÁFICAS
         composable("graphics") {
-            GraphicsScreen(onBack = {
-                navController.popBackStack()
-            })
+            GraphicsScreen(onBack = { navController.popBackStack() })
         }
 
-        // 8. PERFIL
         composable("profile") {
             ProfileScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onLogout = {
                     navController.navigate("login") {
-                        popUpTo(0) // Limpia todo el historial
+                        popUpTo(0)
                     }
                 }
             )
         }
 
-        // 9. APARTADOS (Nuevas pantallas)
+        // --- MÓDULO APARTADOS ---
         composable("apartments") {
             ApartmentsScreen(
                 onBack = { navController.popBackStack() },
-                onCreateNew = { navController.navigate("create_apartment") },
-                onSelectApartment = { id -> navController.navigate("apartment_detail") }
-            )
-        }
-
-        composable("create_apartment") {
-            CreateApartmentScreen(
-                onBack = { navController.popBackStack() }
+                onCreateNew = { navController.navigate("template_personal") },
+                onSelectApartment = { id -> navController.navigate("apartment_detail") },
+                onNavigateToTemplate = { route -> navController.navigate(route) }
             )
         }
 
         composable("apartment_detail") {
-            ApartmentDetailScreen(
-                onBack = { navController.popBackStack() }
-            )
+            ApartmentDetailScreen(onBack = { navController.popBackStack() })
+        }
+
+        // RUTAS DE PLANTILLAS PERSONALIZADAS
+        composable("template_savings") { 
+            SavingsTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_entertainment") { 
+            EntertainmentTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_school") { 
+            SchoolProjectTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_home") { 
+            HomeTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_food") { 
+            FoodTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_personal") { 
+            PersonalGoalTemplateScreen(onBack = { navController.popBackStack() }) 
         }
     }
 }

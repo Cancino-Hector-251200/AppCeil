@@ -28,9 +28,10 @@ import androidx.compose.ui.unit.sp
 val RedNeon = Color(0xFFEF4444)
 
 data class ApartmentTemplate(
-    val icon: ImageVector,
+    val icon: String,
     val name: String,
-    val description: String
+    val description: String,
+    val route: String
 )
 
 data class Apartment(
@@ -46,14 +47,16 @@ data class Apartment(
 fun ApartmentsScreen(
     onBack: () -> Unit = {},
     onCreateNew: () -> Unit = {},
-    onSelectApartment: (Int) -> Unit = {}
+    onSelectApartment: (Int) -> Unit = {},
+    onNavigateToTemplate: (String) -> Unit = {} // Navegación dinámica por ruta
 ) {
     val templates = listOf(
-        ApartmentTemplate(Icons.Default.MenuBook, "Proyecto escolar", "Controla materiales, copias y gastos"),
-        ApartmentTemplate(Icons.Default.Home, "Casa", "Alquiler, servicios y despensa"),
-        ApartmentTemplate(Icons.Default.School, "Universidad", "Mensualidades y transporte"),
-        ApartmentTemplate(Icons.Default.Savings, "Ahorro", "Fondo de emergencia o metas"),
-        ApartmentTemplate(Icons.Default.SportsEsports, "Entretenimiento", "Juegos, cine y salidas")
+        ApartmentTemplate("📚", "Proyecto escolar", "Materiales y transporte", "template_school"),
+        ApartmentTemplate("🏠", "Casa", "Renta y servicios", "template_home"),
+        ApartmentTemplate("💰", "Ahorro", "Metas de ahorro", "template_savings"),
+        ApartmentTemplate("🎮", "Entretenimiento", "Streaming y juegos", "template_entertainment"),
+        ApartmentTemplate("🍔", "Comida", "Dieta y universidad", "template_food"),
+        ApartmentTemplate("🚀", "Meta Personal", "Cualquier objetivo", "template_personal")
     )
 
     val myApartments = listOf(
@@ -77,7 +80,7 @@ fun ApartmentsScreen(
         ) {
             item {
                 Text(
-                    text = "Organiza tu dinero",
+                    text = "Organiza tu dinero por objetivos",
                     color = Color.LightGray,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -85,24 +88,27 @@ fun ApartmentsScreen(
             }
 
             item {
-                CreateApartmentButton(onClick = onCreateNew)
+                CreateApartmentButton(onClick = { onNavigateToTemplate("template_personal") })
             }
 
             item {
-                SectionHeader("Plantillas rápidas")
+                SectionHeader("Planear con plantillas")
                 Spacer(modifier = Modifier.height(12.dp))
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     items(templates) { template ->
-                        TemplateCard(template)
+                        TemplateCard(
+                            template = template,
+                            onClick = { onNavigateToTemplate(template.route) }
+                        )
                     }
                 }
             }
 
             item {
-                SectionHeader("Mis apartados")
+                SectionHeader("Mis apartados activos")
             }
 
             items(myApartments) { apartment ->
@@ -169,7 +175,7 @@ fun CreateApartmentButton(onClick: () -> Unit) {
             Icon(Icons.Default.AddCircle, contentDescription = null, tint = MagentaNeon, modifier = Modifier.size(28.dp))
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "Crear apartado",
+                text = "Crear meta personalizada",
                 color = MagentaNeon,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -189,11 +195,12 @@ fun SectionHeader(title: String) {
 }
 
 @Composable
-fun TemplateCard(template: ApartmentTemplate) {
+fun TemplateCard(template: ApartmentTemplate, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .width(160.dp)
-            .height(180.dp),
+            .height(180.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = CardDark)
     ) {
@@ -203,12 +210,15 @@ fun TemplateCard(template: ApartmentTemplate) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                imageVector = template.icon,
-                contentDescription = null,
-                tint = MagentaNeon,
-                modifier = Modifier.size(32.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MagentaNeon.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = template.icon, fontSize = 24.sp)
+            }
             Column {
                 Text(
                     text = template.name,
@@ -219,7 +229,7 @@ fun TemplateCard(template: ApartmentTemplate) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = template.description,
-                    color = Color.LightGray,
+                    color = Color.Gray,
                     fontSize = 11.sp,
                     lineHeight = 14.sp
                 )

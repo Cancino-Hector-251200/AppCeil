@@ -104,7 +104,6 @@ fun CreateApartmentForm(
     onExpandedChange: (Boolean) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        // Campo: Nombre
         CeilTextField(
             label = "Nombre del apartado",
             value = name,
@@ -112,7 +111,6 @@ fun CreateApartmentForm(
             placeholder = "Ej. Proyecto escolar"
         )
 
-        // Campo: Tipo (Dropdown)
         Column {
             Text(text = "Tipo", color = Color.LightGray, fontSize = 14.sp, modifier = Modifier.padding(bottom = 8.dp))
             Box {
@@ -154,7 +152,6 @@ fun CreateApartmentForm(
             }
         }
 
-        // Campo: Presupuesto
         CeilTextField(
             label = "Presupuesto",
             value = budget,
@@ -163,44 +160,12 @@ fun CreateApartmentForm(
             prefix = { Text("$ ", color = Color.White) }
         )
 
-        // Campo: Fecha límite
         CeilTextField(
             label = "Fecha límite",
             value = deadline,
             onValueChange = onDeadlineChange,
             placeholder = "DD/MM/AAAA",
             trailingIcon = { Icon(Icons.Default.CalendarToday, contentDescription = null, tint = MagentaNeon) }
-        )
-    }
-}
-
-@Composable
-fun CeilTextField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholder: String,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    prefix: @Composable (() -> Unit)? = null
-) {
-    Column {
-        Text(text = label, color = Color.LightGray, fontSize = 14.sp, modifier = Modifier.padding(bottom = 8.dp))
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            placeholder = { Text(placeholder, color = Color.Gray) },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedBorderColor = MagentaNeon,
-                unfocusedBorderColor = Color.Gray,
-                focusedContainerColor = CardDark,
-                unfocusedContainerColor = CardDark
-            ),
-            trailingIcon = trailingIcon,
-            prefix = prefix
         )
     }
 }
