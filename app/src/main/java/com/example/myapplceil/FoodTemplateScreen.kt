@@ -10,68 +10,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-// IMPORTANTE: Importar los colores y componentes del paquete theme
 import com.example.myapplceil.ui.theme.*
 
 @Composable
 fun FoodTemplateScreen(onBack: () -> Unit = {}) {
-    var selectedFoodType by remember { mutableStateOf("Universidad") }
-    var weeklyBudget by remember { mutableStateOf("700") }
-    
-    val foodTypes = listOf(
-        "🎓 Universidad",
-        "🛒 Supermercado",
-        "🛵 Domicilio",
-        "☕️ Cafetería"
-    )
+    var selectedType by remember { mutableStateOf("Comida universidad") }
+    var weeklyBudget by remember { mutableStateOf("") }
+    val foodTypes = listOf("Comida universidad", "Supermercado", "Delivery", "Cafetería")
 
     Scaffold(
         containerColor = NavyDark,
-        topBar = { 
-            TemplateHeader(
-                title = "🍔 Alimentación", 
-                onBack = onBack
-            ) 
-        }
+        topBar = { TemplateHeader("🍔 Comida", onBack) }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item {
-                Text(
-                    text = "¿Cómo planeas comer esta semana?", 
-                    color = Color.White, 
-                    fontSize = 18.sp, 
-                    fontWeight = FontWeight.Bold
-                )
+                Text("¿Qué tipo de comida es?", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(12.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     foodTypes.forEach { type ->
-                        val isSelected = type.contains(selectedFoodType)
                         FilterChip(
-                            selected = isSelected,
-                            onClick = { 
-                                // Extrae el nombre sin el emoji para el estado
-                                selectedFoodType = type.split(" ")[1] 
-                            },
-                            label = { 
-                                Text(
-                                    text = type, 
-                                    modifier = Modifier.padding(vertical = 8.dp)
-                                ) 
-                            },
+                            selected = selectedType == type,
+                            onClick = { selectedType = type },
+                            label = { Text(type) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = GreenNeon,
+                                selectedContainerColor = YellowNeon,
                                 containerColor = CardDark,
-                                labelColor = Color.Gray,
-                                selectedLabelColor = Color.White
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp)
+                                labelColor = Color.White,
+                                selectedLabelColor = NavyDark
+                            )
                         )
                     }
                 }
@@ -79,44 +51,35 @@ fun FoodTemplateScreen(onBack: () -> Unit = {}) {
 
             item {
                 CeilTextField(
-                    label = "Presupuesto semanal para $selectedFoodType",
+                    label = "Presupuesto semanal estimado",
                     value = weeklyBudget,
                     onValueChange = { weeklyBudget = it },
-                    placeholder = "$",
+                    placeholder = "$ 0.00",
                     prefix = { Text("$ ", color = Color.White) }
                 )
             }
 
             item {
-                Text(
-                    text = "Estado actual del presupuesto", 
-                    color = Color.Gray, 
-                    fontSize = 14.sp
-                )
+                Text("Vista previa", color = Color.Gray, fontSize = 14.sp)
                 Spacer(Modifier.height(12.dp))
                 FoodBudgetCard(
-                    title = "Comida en $selectedFoodType",
-                    budget = weeklyBudget.toDoubleOrNull() ?: 0.0,
-                    spent = 450.0
+                    title = "🍔 $selectedType",
+                    budget = weeklyBudget.toDoubleOrNull() ?: 700.0,
+                    spent = 0.0
                 )
             }
 
             item {
                 Button(
-                    onClick = { /* Acción UI */ },
+                    onClick = { /* Save logic */ },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenNeon),
+                    colors = ButtonDefaults.buttonColors(containerColor = YellowNeon),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text(
-                        text = "Iniciar control de comida", 
-                        color = Color.White, 
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("Crear apartado de comida", color = NavyDark, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
-                Spacer(Modifier.height(24.dp))
             }
         }
     }

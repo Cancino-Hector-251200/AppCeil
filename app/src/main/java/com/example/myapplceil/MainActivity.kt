@@ -109,7 +109,17 @@ fun CeilNavigation() {
         composable("apartments") {
             ApartmentsScreen(
                 onBack = { navController.popBackStack() },
-                onSelectApartment = { _ -> navController.navigate("apartment_detail") },
+                onSelectApartment = { id, type -> 
+                    // Aquí manejamos la navegación según el tipo de apartado
+                    val route = when(type.uppercase()) {
+                        "COMIDA" -> "template_food"
+                        "ESCOLAR" -> "template_school"
+                        "ENTRETENIMIENTO" -> "template_entertainment"
+                        "AHORRO" -> "template_savings"
+                        else -> "apartment_detail"
+                    }
+                    navController.navigate(route)
+                },
                 onNavigateToTemplate = { route -> navController.navigate(route) }
             )
         }

@@ -15,6 +15,8 @@ import com.example.myapplceil.ui.theme.*
 fun SchoolProjectTemplateScreen(onBack: () -> Unit = {}) {
     var projectName by remember { mutableStateOf("Proyecto IoT") }
     var budget by remember { mutableStateOf("1200") }
+    var selectedType by remember { mutableStateOf("Proyecto de materia") }
+    
     val categories = listOf(
         Triple("📄 Impresiones", 100.0, MagentaNeon),
         Triple("🧪 Materiales", 500.0, YellowNeon),
@@ -34,16 +36,10 @@ fun SchoolProjectTemplateScreen(onBack: () -> Unit = {}) {
             item {
                 Text("¿Qué tipo de trabajo es?", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    listOf("Proyecto", "Materia", "Tesis").forEach { type ->
-                        FilterChip(
-                            selected = type == "Proyecto",
-                            onClick = {},
-                            label = { Text(type) },
-                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MagentaNeon, containerColor = CardDark)
-                        )
-                    }
-                }
+                SchoolTypeSelector(
+                    selectedType = selectedType,
+                    onTypeSelected = { selectedType = it }
+                )
             }
 
             item {
@@ -68,7 +64,7 @@ fun SchoolProjectTemplateScreen(onBack: () -> Unit = {}) {
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon)
                 ) {
-                    Text("Crear presupuesto escolar")
+                    Text("Crear proyecto escolar", fontWeight = FontWeight.Bold)
                 }
                 Spacer(Modifier.height(20.dp))
             }
