@@ -194,7 +194,7 @@ fun StreamingPlatformFlow(
                 PlanSelector(
                     plans = platformPlans,
                     selectedPlan = selectedPlan,
-                    onPlanSelected = onPlanSelect
+                    onPlanSelect = onPlanSelect
                 )
                 Spacer(Modifier.height(16.dp))
                 Button(
@@ -236,7 +236,7 @@ fun MusicPlatformFlow(
                 PlanSelector(
                     plans = platformPlans,
                     selectedPlan = selectedPlan,
-                    onPlanSelected = onPlanSelect
+                    onPlanSelect = onPlanSelect
                 )
                 Spacer(Modifier.height(16.dp))
                 Button(
@@ -279,7 +279,7 @@ fun GamingPlatformFlow(
                     PlanSelector(
                         plans = platformPlans,
                         selectedPlan = selectedPlan,
-                        onPlanSelected = onPlanSelect
+                        onPlanSelect = onPlanSelect
                     )
                     Spacer(Modifier.height(16.dp))
                     Button(

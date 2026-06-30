@@ -307,12 +307,12 @@ fun SubscriptionCard(name: String, isSelected: Boolean, onClick: () -> Unit, con
 }
 
 @Composable
-fun PlanSelector(plans: List<Pair<String, Double>>, selectedPlan: String, onPlanSelected: (String, Double) -> Unit) {
+fun PlanSelector(plans: List<Pair<String, Double>>, selectedPlan: String, onPlanSelect: (String, Double) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         plans.forEach { (planName, price) ->
             val isSelected = selectedPlan == planName
             Card(
-                modifier = Modifier.fillMaxWidth().clickable { onPlanSelected(planName, price) },
+                modifier = Modifier.fillMaxWidth().clickable { onPlanSelect(planName, price) },
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = if (isSelected) MagentaNeon.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.05f)),
                 border = if (isSelected) BorderStroke(1.dp, MagentaNeon) else null

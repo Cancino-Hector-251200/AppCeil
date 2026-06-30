@@ -53,6 +53,12 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
         drawerContent = {
             CeilDrawerContent(
                 onCloseDrawer = { scope.launch { drawerState.close() } },
+                onNavigateToMedals = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("medals")
+                    }
+                },
                 onNavigateToDebts = {
                     scope.launch {
                         drawerState.close()
@@ -142,8 +148,8 @@ fun MoneyCard(onMenuOpen: () -> Unit) {
                 Row {
                     IconButton(onClick = { isExpanded = !isExpanded }) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Editar",
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Editar ingreso",
                             tint = if (isExpanded) MagentaNeon else Color.LightGray
                         )
                     }
@@ -295,6 +301,7 @@ fun ExpandedMoneyCard(onSave: () -> Unit) {
 @Composable
 fun CeilDrawerContent(
     onCloseDrawer: () -> Unit,
+    onNavigateToMedals: () -> Unit,
     onNavigateToDebts: () -> Unit,
     onNavigateToGraphics: () -> Unit,
     onNavigateToProfile: () -> Unit,
@@ -318,7 +325,7 @@ fun CeilDrawerContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         CeilDrawerItem(icon = Icons.Default.Person, label = "Perfil", onClick = onNavigateToProfile)
-        CeilDrawerItem(icon = Icons.Default.EmojiEvents, label = "Medallas", onClick = {})
+        CeilDrawerItem(icon = Icons.Default.EmojiEvents, label = "Medallas", onClick = onNavigateToMedals)
         CeilDrawerItem(icon = Icons.Default.SwapHoriz, label = "Me deben y debo", onClick = onNavigateToDebts)
         CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas", onClick = onNavigateToGraphics)
         CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados", onClick = onNavigateToApartments)

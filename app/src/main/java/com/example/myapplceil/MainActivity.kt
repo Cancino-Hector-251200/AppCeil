@@ -105,6 +105,10 @@ fun CeilNavigation() {
             )
         }
 
+        composable("medals") {
+            MedalsScreen(onBack = { navController.popBackStack() })
+        }
+
         // --- MÓDULO APARTADOS ---
         composable("apartments") {
             ApartmentsScreen(
