@@ -128,5 +128,43 @@ fun CeilNavigation() {
                 onNavigateBack = { navController.popBackStack() }
             )
         }
+
+        // 10. MEDALLAS
+        composable("medals") {
+            MedalsScreen(onBack = { navController.popBackStack() })
+        }
+
+        // 11. APARTADOS
+        composable("apartments") {
+            ApartmentsScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToTemplate = { route -> navController.navigate(route) },
+                onSelectApartment = { _, _ -> navController.navigate("apartment_detail") }
+            )
+        }
+
+        composable("apartment_detail") {
+            ApartmentDetailScreen(onBack = { navController.popBackStack() })
+        }
+
+        // RUTAS DE PLANTILLAS PARA APARTADOS
+        composable("template_savings") { 
+            SavingsTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_entertainment") { 
+            EntertainmentTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_school") { 
+            SchoolProjectTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_home") { 
+            HomeTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_food") { 
+            FoodTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_personal") { 
+            PersonalGoalTemplateScreen(onBack = { navController.popBackStack() })
+        }
     }
 }

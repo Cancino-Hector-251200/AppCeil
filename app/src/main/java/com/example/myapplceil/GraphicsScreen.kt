@@ -20,10 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-// Solo dejamos RedNeon porque es el único que NO está en DashboardScreen.kt
-// Los demás (NavyDark, CardDark, MagentaNeon, etc.) se toman automáticamente de DashboardScreen.kt
-private val RedNeon = Color(0xFFEF4444)
+// IMPORTAMOS TODOS LOS COLORES DEL TEMA
+import com.example.myapplceil.ui.theme.*
 
 @Composable
 fun GraphicsScreen(onBack: () -> Unit = {}) {
