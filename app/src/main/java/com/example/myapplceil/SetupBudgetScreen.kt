@@ -21,6 +21,7 @@ fun SetupBudgetScreen(onSetupCompleto: (Double, Int) -> Unit) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = BackgroundScreen
+        color =   NavyLight
     ) {
         Column(
             modifier = Modifier
@@ -34,11 +35,13 @@ fun SetupBudgetScreen(onSetupCompleto: (Double, Int) -> Unit) {
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = BlueDark // Título principal en azul marino
+                color = Color.White // Título principal en azul marino
             )
             Text(
                 text = "Ingresa tu dinero disponible y el tiempo que planeas administrarlo",
                 fontSize = 14.sp,
                 color = Color.DarkGray, // Gris oscuro para que se lea en fondo claro
+                color = Color.White, // Gris oscuro para que se lea en fondo claro
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
@@ -48,6 +51,7 @@ fun SetupBudgetScreen(onSetupCompleto: (Double, Int) -> Unit) {
                 value = montoInput,
                 onValueChange = { montoInput = it },
                 label = { Text("Monto Inicial ($)", color = BlueDark) },
+                label = { Text("Monto Inicial ($)", color = White) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -62,6 +66,7 @@ fun SetupBudgetScreen(onSetupCompleto: (Double, Int) -> Unit) {
                 value = semanasInput,
                 onValueChange = { semanasInput = it },
                 label = { Text("¿Para cuántas semanas es?", color = BlueDark) },
+                label = { Text("¿Para cuántas semanas es?", color = White) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(

@@ -1,5 +1,8 @@
 package com.example.myapplceil
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,8 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplceil.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -32,8 +36,9 @@ data class Transaction(
     val categoryColor: Color
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(navController: NavController = rememberNavController()) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -48,12 +53,59 @@ fun DashboardScreen() {
         drawerState = drawerState,
         drawerContent = {
             CeilDrawerContent(
-                onCloseDrawer = { scope.launch { drawerState.close() } }
+                onCloseDrawer = { scope.launch { drawerState.close() } },
+                onNavigateToDebts = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("debts")
+                    }
+                },
+                onNavigateToGraphics = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("graphics")
+                    }
+                },
+                onNavigateToProfile = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("profile")
+                    }
+                },
+                onNavigateToTerms = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("terms")
+                    }
+                },
+                onNavigateToMedals = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("medals")
+                    }
+                },
+                onNavigateToApartments = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("apartments")
+                    }
+                }
             )
         }
     ) {
         Scaffold(
             containerColor = NavyDark,
+            topBar = {
+                TopAppBar(
+                    navigationIcon = {
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.LightGray)
+                        }
+                    },
+                    title = { Text("Resumen", color = Color.White, fontWeight = FontWeight.Bold) },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = NavyDark)
+                )
+            },
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = { /* Add Action */ },
@@ -71,121 +123,34 @@ fun DashboardScreen() {
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                // --- Tarjeta Superior de Presupuesto ---
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF151E3D))
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(20.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        // Fila Superior: Título e Iconos
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Monto total",
-                                color = Color.LightGray,
-                                fontSize = 16.sp
-                            )
-                            Row {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = "Fecha",
-                                    tint = Color.LightGray,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(12.dp))
-                                // Icono de Menú de Hamburguesa para abrir el drawer
-                                IconButton(
-                                    onClick = { scope.launch { drawerState.open() } },
-                                    modifier = Modifier.size(24.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Menu,
-                                        contentDescription = "Menu Lateral",
-                                        tint = Color.LightGray
-                                    )
-                                }
-                            }
-                        }
+                MoneyCard()
 
-                        // Monto Central
-                        Text(
-                            text = "$1500",
-                            color = Color.White,
-                            fontSize = 48.sp,
-                            fontWeight = FontWeight.Black,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
+                Spacer(modifier = Modifier.height(24.dp))
 
-                        // Fila Inferior: Editar y Botones +/-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Editar",
-                                color = MagentaNeon,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Sumar",
-                                tint = MagentaNeon,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Icon(
-                                imageVector = Icons.Default.Remove,
-                                contentDescription = "Restar",
-                                tint = MagentaNeon,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    }
+                // SECCIÓN DE ACCESO RÁPIDO A APARTADOS
+                Text(text = "Accesos rápidos", color = Color.Gray, fontSize = 14.sp)
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    QuickAccessCard(
+                        title = "Apartados",
+                        icon = Icons.Default.Folder,
+                        color = PurpleNeon,
+                        modifier = Modifier.weight(1f),
+                        onClick = { navController.navigate("apartments") }
+                    )
+                    QuickAccessCard(
+                        title = "Gráficas",
+                        icon = Icons.Default.PieChart,
+                        color = MagentaNeon,
+                        modifier = Modifier.weight(1f),
+                        onClick = { navController.navigate("graphics") }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
-
-                // --- Encabezado de la Lista (Historial) ---
-                Text(
-                    text = "Historial",
-                    color = MagentaNeon,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
+                Text(text = "Historial", color = MagentaNeon, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Cabecera de la Tabla
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Nombre de compra", color = Color.Gray, fontSize = 12.sp)
-                    Text(text = "$ Monto", color = Color.Gray, fontSize = 12.sp)
-                }
-
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    color = Color.Gray.copy(alpha = 0.2f)
-                )
-
-                // --- Lista de Gastos ---
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxSize()
@@ -200,63 +165,245 @@ fun DashboardScreen() {
 }
 
 @Composable
-fun CeilDrawerContent(onCloseDrawer: () -> Unit) {
-    ModalDrawerSheet(
-        drawerContainerColor = NavyDark,
-        drawerContentColor = Color.White,
-        drawerShape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp),
-        modifier = Modifier
-            .fillMaxHeight()
-            .width(300.dp)
+fun QuickAccessCard(title: String, icon: ImageVector, color: Color, modifier: Modifier, onClick: () -> Unit) {
+    Card(
+        modifier = modifier
+            .height(100.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = CardDark)
     ) {
-        // --- Header del Menú ---
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(onClick = onCloseDrawer) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Atrás",
-                    tint = Color.LightGray
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Menu",
-                color = MagentaNeon,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(28.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = title, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
-
-        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // --- Lista de Opciones ---
-        CeilDrawerItem(icon = Icons.Default.Person, label = "Perfil")
-        CeilDrawerItem(icon = Icons.Default.EmojiEvents, label = "Medallas/Logros")
-        CeilDrawerItem(icon = Icons.Default.SwapHoriz, label = "Me deben y debo")
-        CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas")
-        CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados")
-        CeilDrawerItem(icon = Icons.Default.Help, label = "Ayuda")
     }
 }
 
 @Composable
-fun CeilDrawerItem(icon: ImageVector, label: String) {
+fun MoneyCard() {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = CardDark),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "💰 Mi dinero", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
+                IconButton(onClick = { isExpanded = !isExpanded }) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Editar",
+                        tint = if (isExpanded) MagentaNeon else Color.LightGray
+                    )
+                }
+            }
+
+            AnimatedVisibility(visible = !isExpanded) {
+                Column {
+                    Text(
+                        text = "$1500",
+                        color = Color.White,
+                        fontSize = 48.sp,
+                        fontWeight = FontWeight.Black,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                    FrequencyChip("Quincenal")
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(text = "Disponible actualmente", color = Color.LightGray, fontSize = 12.sp)
+                            Text(text = "$920", color = GreenNeon, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(text = "Presupuesto diario", color = Color.LightGray, fontSize = 12.sp)
+                            Text(text = "$85", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    SavingsProgress(progress = 0.4f)
+                }
+            }
+
+            AnimatedVisibility(visible = isExpanded) {
+                ExpandedMoneyCard(onSave = { isExpanded = false })
+            }
+        }
+    }
+}
+
+@Composable
+fun FrequencyChip(label: String) {
+    Surface(
+        color = Color(0xFF2D1B4D),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, MagentaNeon.copy(alpha = 0.3f))
+    ) {
+        Text(
+            text = "🗓 $label",
+            color = Color.White,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+fun SavingsProgress(progress: Float) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Ahorro", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+            Text(text = "${(progress * 100).toInt()}%", color = YellowNeon, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .clip(RoundedCornerShape(5.dp)),
+            color = YellowNeon,
+            trackColor = Color.White.copy(alpha = 0.1f),
+        )
+    }
+}
+
+@Composable
+fun ExpandedMoneyCard(onSave: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(text = "Editar ingreso", color = MagentaNeon, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        OutlinedTextField(
+            value = "$1500",
+            onValueChange = {},
+            label = { Text("Monto", color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = MagentaNeon,
+                unfocusedBorderColor = Color.Gray,
+                focusedContainerColor = CardDark,
+                unfocusedContainerColor = CardDark
+            )
+        )
+        OutlinedTextField(
+            value = "Quincenal",
+            onValueChange = {},
+            label = { Text("Frecuencia", color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            trailingIcon = { Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = Color.White) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = MagentaNeon,
+                unfocusedBorderColor = Color.Gray,
+                focusedContainerColor = CardDark,
+                unfocusedContainerColor = CardDark
+            )
+        )
+        OutlinedTextField(
+            value = "$500",
+            onValueChange = {},
+            label = { Text("Meta de ahorro", color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = MagentaNeon,
+                unfocusedBorderColor = Color.Gray,
+                focusedContainerColor = CardDark,
+                unfocusedContainerColor = CardDark
+            )
+        )
+        Button(
+            onClick = onSave,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text("Guardar", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@Composable
+fun CeilDrawerContent(
+    onCloseDrawer: () -> Unit,
+    onNavigateToDebts: () -> Unit,
+    onNavigateToGraphics: () -> Unit,
+    onNavigateToProfile: () -> Unit,
+    onNavigateToTerms: () -> Unit,
+    onNavigateToMedals: () -> Unit,
+    onNavigateToApartments: () -> Unit
+) {
+    ModalDrawerSheet(
+        drawerContainerColor = NavyDark,
+        drawerContentColor = Color.White,
+        modifier = Modifier.width(300.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onCloseDrawer) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.LightGray)
+            }
+            Text(text = "Menu", color = MagentaNeon, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        }
+        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        CeilDrawerItem(icon = Icons.Default.Person, label = "Perfil", onClick = onNavigateToProfile)
+        CeilDrawerItem(icon = Icons.Default.EmojiEvents, label = "Medallas", onClick = onNavigateToMedals)
+        CeilDrawerItem(icon = Icons.Default.SwapHoriz, label = "Me deben y debo", onClick = onNavigateToDebts)
+        CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas", onClick = onNavigateToGraphics)
+        CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados", onClick = onNavigateToApartments)
+        CeilDrawerItem(icon = Icons.Default.PrivacyTip, label = "Privacidad", onClick = onNavigateToTerms)
+    }
+}
+
+@Composable
+fun CeilDrawerItem(icon: ImageVector, label: String, onClick: () -> Unit) {
     NavigationDrawerItem(
-        icon = { Icon(imageVector = icon, contentDescription = null, tint = MagentaNeon) },
-        label = { Text(text = label, color = Color.White, fontWeight = FontWeight.Medium) },
+        icon = { Icon(icon, contentDescription = null, tint = MagentaNeon) },
+        label = { Text(label, color = Color.White) },
         selected = false,
-        onClick = { /* Handle navigation here */ },
-        colors = NavigationDrawerItemDefaults.colors(
-            unselectedContainerColor = Color.Transparent,
-            selectedContainerColor = MagentaNeon.copy(alpha = 0.1f)
-        ),
+        onClick = onClick,
+        colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
     )
 }
@@ -264,60 +411,18 @@ fun CeilDrawerItem(icon: ImageVector, label: String) {
 @Composable
 fun TransactionItem(transaction: Transaction) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Indicador de Categoría
-        Box(
-            modifier = Modifier
-                .size(12.dp)
-                .clip(CircleShape)
-                .background(transaction.categoryColor)
-        )
-
+        Box(modifier = Modifier.size(12.dp).clip(CircleShape).background(transaction.categoryColor))
         Spacer(modifier = Modifier.width(12.dp))
-
-        // Nombre
-        Text(
-            text = transaction.name,
-            color = Color.White,
-            fontSize = 16.sp,
-            modifier = Modifier.weight(1f)
-        )
-
-        // Monto
-        Text(
-            text = transaction.amount,
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        // Acciones
-        Icon(
-            imageVector = Icons.Default.Edit,
-            contentDescription = "Editar",
-            tint = Color.Gray,
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Icon(
-            imageVector = Icons.Default.Delete,
-            contentDescription = "Eliminar",
-            tint = Color.Red.copy(alpha = 0.7f),
-            modifier = Modifier.size(20.dp)
-        )
+        Text(text = transaction.name, color = Color.White, fontSize = 16.sp, modifier = Modifier.weight(1f))
+        Text(text = transaction.amount, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DashboardPreview() {
-    MyApplCeilTheme {
-        DashboardScreen()
-    }
+    DashboardScreen()
 }

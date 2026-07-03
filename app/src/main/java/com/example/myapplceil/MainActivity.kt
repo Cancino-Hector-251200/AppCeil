@@ -14,9 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplceil.ui.theme.MyApplCeilTheme
 
-// Importante: Asegúrate de agregar esta dependencia en build.gradle.kts (app):
-// implementation("androidx.navigation:navigation-compose:2.8.5")
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,46 +39,37 @@ fun CeilNavigation() {
         navController = navController,
         startDestination = "login"
     ) {
-        // Ruta Inicial: Login
+        // 1. LOGIN
         composable("login") {
             LoginScreen(
-                onNavigateToRegister = {
-                    navController.navigate("register")
-                },
-                onNavigateToDashboard = {
+                onNavigateToRegister = { navController.navigate("register") },
+                onLoginSuccess = {
                     navController.navigate("dashboard") {
-                        // Al iniciar sesión, limpiamos el historial para que no pueda volver atrás al login
                         popUpTo("login") { inclusive = true }
                     }
                 }
             )
         }
 
-        // Ruta de Registro
+        // 2. REGISTRO
         composable("register") {
             RegisterScreen(
-                onNavigateToLogin = {
-                    // Regresar al login (pop de la pila)
-                    navController.popBackStack()
-                },
-                onNavigateToDashboard = {
-                    // Al completar el registro, navegamos al aviso de privacidad
-                    navController.navigate("privacy")
+                onNavigateToLogin = { navController.popBackStack() },
+                onRegisterSuccess = { 
+                    navController.navigate("privacy") 
                 }
             )
         }
 
-        // Ruta de Privacidad
+        // 3. PRIVACIDAD
         composable("privacy") {
             PrivacyScreen(
                 onAceptarTerms = {
-                    // Al aceptar, vamos al Dashboard y eliminamos TODO el historial previo
-                    navController.navigate("dashboard") {
+                    navController.navigate("budget_setup") {
                         popUpTo("login") { inclusive = true }
                     }
                 },
                 onRechazarTerms = {
-                    // Al rechazar, regresamos al Login
                     navController.navigate("login") {
                         popUpTo("register") { inclusive = true }
                     }
@@ -89,9 +77,75 @@ fun CeilNavigation() {
             )
         }
 
-        // Ruta Principal: Dashboard
-        composable("dashboard") {
-            DashboardScreen()
+        // 4. CONFIGURACIÓN DE PRESUPUESTO
+        composable("budget_setup") {
+            SetupBudgetScreen(
+                onSetupCompleto = { monto, dias ->
+                    navController.navigate("dashboard") {
+                        popUpTo("budget_setup") { inclusive = true }
+                    }
+                }
+            )
         }
+
+        // 5. DASHBOARD
+        composable("dashboard") {
+            DashboardScreen(navController = navController)
+        }
+
+        // 6. DEUDAS
+        composable("debts") {
+            DebtScreen(onBack = { navController.popBackStack() })
+        }
+
+        // 7. GRÁFICAS
+        composable("graphics") {
+            GraphicsScreen(onBack = { navController.popBackStack() })
+        }
+
+        // 8. PERFIL
+        composable("profile") {
+            ProfileScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo(0)
+                    }
+                }
+            )
+        }
+
+        // 9. TÉRMINOS LEGALES (MENÚ)
+        composable("terms") {
+            MenuPrivacyScreen(onNavigateBack = { navController.popBackStack() })
+        }
+
+        // 10. MEDALLAS
+        composable("medals") {
+            MedalsScreen(onBack = { navController.popBackStack() })
+        }
+
+        // 11. APARTADOS
+        composable("apartments") {
+            ApartmentsScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToTemplate = { route -> navController.navigate(route) },
+                onSelectApartment = { id, type -> 
+                    navController.navigate("apartment_detail") 
+                }
+            )
+        }
+
+        composable("apartment_detail") {
+            ApartmentDetailScreen(onBack = { navController.popBackStack() })
+        }
+
+        // PLANTILLAS
+        composable("template_savings") { SavingsTemplateScreen(onBack = { navController.popBackStack() }) }
+        composable("template_entertainment") { EntertainmentTemplateScreen(onBack = { navController.popBackStack() }) }
+        composable("template_school") { SchoolProjectTemplateScreen(onBack = { navController.popBackStack() }) }
+        composable("template_home") { HomeTemplateScreen(onBack = { navController.popBackStack() }) }
+        composable("template_food") { FoodTemplateScreen(onBack = { navController.popBackStack() }) }
+        composable("template_personal") { PersonalGoalTemplateScreen(onBack = { navController.popBackStack() }) }
     }
 }
