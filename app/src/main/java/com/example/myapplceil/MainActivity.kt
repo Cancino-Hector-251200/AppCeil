@@ -101,7 +101,8 @@ fun CeilNavigation() {
                     navController.navigate("login") {
                         popUpTo(0)
                     }
-                }
+                },
+                onNavigateToAdmin = { navController.navigate("admin_main") }
             )
         }
 
@@ -150,6 +151,13 @@ fun CeilNavigation() {
         }
         composable("template_personal") { 
             PersonalGoalTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+
+        // MÓDULO ADMINISTRATIVO
+        composable("admin_main") {
+            AdminMainScreen(onExitAdmin = {
+                navController.popBackStack()
+            })
         }
     }
 }
