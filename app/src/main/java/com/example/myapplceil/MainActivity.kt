@@ -37,7 +37,7 @@ fun CeilNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "login" // Flujo comienza en Login
+        startDestination = "login"
     ) {
         // 1. LOGIN
         composable("login") {
@@ -56,7 +56,6 @@ fun CeilNavigation() {
             RegisterScreen(
                 onNavigateToLogin = { navController.popBackStack() },
                 onRegisterSuccess = { 
-                    // Después de registrarse, va a Privacidad
                     navController.navigate("privacy") 
                 }
             )
@@ -66,7 +65,6 @@ fun CeilNavigation() {
         composable("privacy") {
             PrivacyScreen(
                 onAceptarTerms = {
-                    // Al aceptar, configuramos el presupuesto
                     navController.navigate("budget_setup") {
                         popUpTo("login") { inclusive = true }
                     }
@@ -83,7 +81,6 @@ fun CeilNavigation() {
         composable("budget_setup") {
             SetupBudgetScreen(
                 onSetupCompleto = { monto, dias ->
-                    // Configuración lista -> Al Dashboard
                     navController.navigate("dashboard") {
                         popUpTo("budget_setup") { inclusive = true }
                     }
@@ -91,23 +88,19 @@ fun CeilNavigation() {
             )
         }
 
-        // 5. DASHBOARD (PANEL PRINCIPAL)
+        // 5. DASHBOARD
         composable("dashboard") {
             DashboardScreen(navController = navController)
         }
 
         // 6. DEUDAS
         composable("debts") {
-            DebtScreen(onBack = { 
-                navController.popBackStack()
-            })
+            DebtScreen(onBack = { navController.popBackStack() })
         }
 
         // 7. GRÁFICAS
         composable("graphics") {
-            GraphicsScreen(onBack = {
-                navController.popBackStack()
-            })
+            GraphicsScreen(onBack = { navController.popBackStack() })
         }
 
         // 8. PERFIL
@@ -116,17 +109,16 @@ fun CeilNavigation() {
                 onNavigateBack = { navController.popBackStack() },
                 onLogout = {
                     navController.navigate("login") {
-                        popUpTo(0) // Limpia todo el historial
+                        popUpTo(0)
                     }
-                }
+                },
+                onNavigateToAdmin = { navController.navigate("admin_main") }
             )
         }
 
         // 9. TÉRMINOS LEGALES (MENÚ)
         composable("terms") {
-            MenuPrivacyScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
+            MenuPrivacyScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         // 10. MEDALLAS
@@ -139,7 +131,9 @@ fun CeilNavigation() {
             ApartmentsScreen(
                 onBack = { navController.popBackStack() },
                 onNavigateToTemplate = { route -> navController.navigate(route) },
-                onSelectApartment = { _, _ -> navController.navigate("apartment_detail") }
+                onSelectApartment = { id, type -> 
+                    navController.navigate("apartment_detail") 
+                }
             )
         }
 
@@ -147,7 +141,7 @@ fun CeilNavigation() {
             ApartmentDetailScreen(onBack = { navController.popBackStack() })
         }
 
-        // RUTAS DE PLANTILLAS PARA APARTADOS
+        // RUTAS DE PLANTILLAS
         composable("template_savings") { 
             SavingsTemplateScreen(onBack = { navController.popBackStack() }) 
         }
@@ -164,7 +158,14 @@ fun CeilNavigation() {
             FoodTemplateScreen(onBack = { navController.popBackStack() }) 
         }
         composable("template_personal") { 
-            PersonalGoalTemplateScreen(onBack = { navController.popBackStack() })
+            PersonalGoalTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+
+        // MÓDULO ADMINISTRATIVO
+        composable("admin_main") {
+            AdminMainScreen(onExitAdmin = {
+                navController.popBackStack()
+            })
         }
     }
 }

@@ -31,7 +31,8 @@ import com.example.myapplceil.ui.theme.*
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit = {},
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    onNavigateToAdmin: () -> Unit = {}
 ) {
     // Variables de estado
     var nombre by remember { mutableStateOf("Usuario Ceil") }
@@ -241,6 +242,18 @@ fun ProfileScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Guardar Cambios", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // --- BOTÓN DE ACCESO ADMIN (SOLO DEMO) ---
+            OutlinedButton(
+                onClick = onNavigateToAdmin,
+                modifier = Modifier.fillMaxWidth().height(55.dp),
+                border = BorderStroke(1.dp, BlueAdmin),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Panel Administrativo", color = BlueAdmin, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -9,6 +9,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -122,6 +126,7 @@ fun RegisterScreen(
                         label = "Nombre",
                         value = username,
                         onValueChange = { username = it },
+                        icon = Icons.Outlined.Person,
                         placeholder = "Tu nombre"
                     )
 
@@ -132,6 +137,7 @@ fun RegisterScreen(
                         label = "Correo",
                         value = email,
                         onValueChange = { email = it },
+                        icon = Icons.Outlined.Email,
                         placeholder = "ejemplo@correo.com",
                         keyboardType = KeyboardType.Email
                     )
@@ -143,6 +149,7 @@ fun RegisterScreen(
                         label = "Contraseña",
                         value = password,
                         onValueChange = { password = it },
+                        icon = Icons.Outlined.Lock,
                         placeholder = "Crea una contraseña",
                         isPassword = true,
                         keyboardType = KeyboardType.Password
@@ -155,6 +162,7 @@ fun RegisterScreen(
                         label = "Confirma la contraseña",
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
+                        icon = Icons.Outlined.Lock,
                         placeholder = "Repite tu contraseña",
                         isPassword = true,
                         keyboardType = KeyboardType.Password
@@ -203,6 +211,7 @@ fun RegisterInputField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
+    icon: ImageVector,
     placeholder: String,
     isPassword: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text
@@ -220,6 +229,9 @@ fun RegisterInputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(8.dp)),
+            leadingIcon = {
+                Icon(imageVector = icon, contentDescription = null, tint = NavyDark)
+            },
             placeholder = { Text(text = placeholder, color = Color.Gray) },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,

@@ -30,6 +30,7 @@ fun PrivacyScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(NavyDark)
+            .padding(24.dp)
     ) {
         Column(
             modifier = Modifier
@@ -43,6 +44,7 @@ fun PrivacyScreen(
                 imageVector = Icons.Outlined.PrivacyTip,
                 contentDescription = null,
                 tint = MagentaNeon,
+                modifier = Modifier.size(64.dp)
                 modifier = Modifier.size(72.dp)
             )
 
@@ -52,14 +54,17 @@ fun PrivacyScreen(
                 text = "Aviso de Privacidad",
                 color = Color.White,
                 fontSize = 28.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = NavyLight),
                 shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
@@ -69,29 +74,38 @@ fun PrivacyScreen(
                             "No compartimos tu información con terceros sin tu consentimiento explícito.",
                     color = Color.LightGray,
                     fontSize = 16.sp,
+                    color = Color.White,
+                    fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(20.dp)
                 )
             }
 
+            Spacer(modifier = Modifier.height(32.dp))
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
                 onClick = onAceptarTerms,
+                colors = ButtonDefaults.buttonColors(containerColor = PinkMain),
+                shape = RoundedCornerShape(25.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(50.dp)
                     .height(55.dp)
             ) {
                 Text(
                     text = "Aceptar",
                     color = Color.White,
+                    fontWeight = FontWeight.Bold
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
             }
 
+            Spacer(modifier = Modifier.height(12.dp))
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedButton(
@@ -99,13 +113,16 @@ fun PrivacyScreen(
                 border = ButtonDefaults.outlinedButtonBorder.copy(
                     brush = androidx.compose.ui.graphics.SolidColor(Color.Gray)
                 ),
+                shape = RoundedCornerShape(25.dp),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(50.dp)
                     .height(55.dp)
             ) {
                 Text(
                     text = "Rechazar",
+                    color = Color.Gray
                     color = Color.LightGray,
                     fontSize = 16.sp
                 )

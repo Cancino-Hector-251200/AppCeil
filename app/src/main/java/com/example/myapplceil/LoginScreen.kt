@@ -94,7 +94,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Rocket Icon (START style from image)
+            // Rocket Icon
             Icon(
                 imageVector = Icons.Outlined.RocketLaunch,
                 contentDescription = null,
@@ -123,6 +123,7 @@ fun LoginScreen(
                     LoginInputField(
                         value = email,
                         onValueChange = { email = it },
+                        icon = Icons.Outlined.Email,
                         placeholder = "ejemplo@correo.com",
                         keyboardType = KeyboardType.Email
                     )
@@ -139,6 +140,7 @@ fun LoginScreen(
                     LoginInputField(
                         value = password,
                         onValueChange = { password = it },
+                        icon = Icons.Outlined.Lock,
                         isPassword = true,
                         placeholder = "********",
                         keyboardType = KeyboardType.Password
@@ -150,7 +152,7 @@ fun LoginScreen(
                     Button(
                         onClick = onLoginSuccess,
                         colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(25.dp),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     ) {
                         Text(
@@ -183,6 +185,7 @@ fun LoginScreen(
 fun LoginInputField(
     value: String,
     onValueChange: (String) -> Unit,
+    icon: ImageVector,
     placeholder: String,
     isPassword: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text
@@ -193,6 +196,9 @@ fun LoginInputField(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp)),
+        leadingIcon = {
+            Icon(imageVector = icon, contentDescription = null, tint = NavyDark)
+        },
         placeholder = { Text(text = placeholder, color = Color.Gray) },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.White,
