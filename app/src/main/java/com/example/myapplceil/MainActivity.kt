@@ -111,7 +111,8 @@ fun CeilNavigation() {
                     navController.navigate("login") {
                         popUpTo(0)
                     }
-                }
+                },
+                onNavigateToAdmin = { navController.navigate("admin_main") }
             )
         }
 
@@ -140,12 +141,31 @@ fun CeilNavigation() {
             ApartmentDetailScreen(onBack = { navController.popBackStack() })
         }
 
-        // PLANTILLAS
-        composable("template_savings") { SavingsTemplateScreen(onBack = { navController.popBackStack() }) }
-        composable("template_entertainment") { EntertainmentTemplateScreen(onBack = { navController.popBackStack() }) }
-        composable("template_school") { SchoolProjectTemplateScreen(onBack = { navController.popBackStack() }) }
-        composable("template_home") { HomeTemplateScreen(onBack = { navController.popBackStack() }) }
-        composable("template_food") { FoodTemplateScreen(onBack = { navController.popBackStack() }) }
-        composable("template_personal") { PersonalGoalTemplateScreen(onBack = { navController.popBackStack() }) }
+        // RUTAS DE PLANTILLAS
+        composable("template_savings") { 
+            SavingsTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_entertainment") { 
+            EntertainmentTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_school") { 
+            SchoolProjectTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_home") { 
+            HomeTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_food") { 
+            FoodTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+        composable("template_personal") { 
+            PersonalGoalTemplateScreen(onBack = { navController.popBackStack() }) 
+        }
+
+        // MÓDULO ADMINISTRATIVO
+        composable("admin_main") {
+            AdminMainScreen(onExitAdmin = {
+                navController.popBackStack()
+            })
+        }
     }
 }
