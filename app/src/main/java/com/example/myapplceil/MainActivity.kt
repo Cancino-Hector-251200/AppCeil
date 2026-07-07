@@ -44,6 +44,7 @@ fun CeilNavigation() {
             LoginScreen(
                 onNavigateToRegister = { navController.navigate("register") },
                 onLoginSuccess = {
+                    // Por defecto, el login lleva al Dashboard de Usuario
                     navController.navigate("dashboard") {
                         popUpTo("login") { inclusive = true }
                     }
@@ -51,12 +52,20 @@ fun CeilNavigation() {
             )
         }
 
-        // 2. REGISTRO
+        // 2. REGISTRO (Aquí es donde se selecciona el Rol)
         composable("register") {
             RegisterScreen(
                 onNavigateToLogin = { navController.popBackStack() },
-                onRegisterSuccess = { 
-                    navController.navigate("privacy") 
+                onRegisterSuccess = { isAdmin ->
+                    if (isAdmin) {
+                        // Si se registra como Admin, va al panel administrativo
+                        navController.navigate("admin_main") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    } else {
+                        // Los usuarios normales pasan por el flujo de privacidad
+                        navController.navigate("privacy")
+                    }
                 }
             )
         }
@@ -65,7 +74,7 @@ fun CeilNavigation() {
         composable("privacy") {
             PrivacyScreen(
                 onAceptarTerms = {
-                    navController.navigate("budget_setup") {
+                    navController.navigate("category_selection") {
                         popUpTo("login") { inclusive = true }
                     }
                 },
@@ -77,12 +86,22 @@ fun CeilNavigation() {
             )
         }
 
+        // 3.5. SELECCIÓN DE CATEGORÍAS
+        composable("category_selection") {
+            CategorySelectionScreen(
+                onNavigateNext = {
+                    navController.navigate("budget_setup")
+                }
+            )
+        }
+
         // 4. CONFIGURACIÓN DE PRESUPUESTO
         composable("budget_setup") {
             SetupBudgetScreen(
-                onSetupCompleto = { monto, dias ->
+                onSetupCompleto = { _, _ ->
+                    // Navegamos al dashboard y limpiamos todo el flujo de registro
                     navController.navigate("dashboard") {
-                        popUpTo("budget_setup") { inclusive = true }
+                        popUpTo("login") { inclusive = true }
                     }
                 }
             )
@@ -111,8 +130,7 @@ fun CeilNavigation() {
                     navController.navigate("login") {
                         popUpTo(0)
                     }
-                },
-                onNavigateToAdmin = { navController.navigate("admin_main") }
+                }
             )
         }
 
@@ -131,8 +149,8 @@ fun CeilNavigation() {
             ApartmentsScreen(
                 onBack = { navController.popBackStack() },
                 onNavigateToTemplate = { route -> navController.navigate(route) },
-                onSelectApartment = { id, type -> 
-                    navController.navigate("apartment_detail") 
+                onSelectApartment = { id, type ->
+                    navController.navigate("apartment_detail")
                 }
             )
         }
@@ -158,13 +176,16 @@ fun CeilNavigation() {
             FoodTemplateScreen(onBack = { navController.popBackStack() }) 
         }
         composable("template_personal") { 
-            PersonalGoalTemplateScreen(onBack = { navController.popBackStack() }) 
+            PersonalGoalTemplateScreen(onBack = { navController.popBackStack() })
         }
 
         // MÓDULO ADMINISTRATIVO
         composable("admin_main") {
             AdminMainScreen(onExitAdmin = {
-                navController.popBackStack()
+                // Al salir del panel admin, regresamos al login para seguridad
+                navController.navigate("login") {
+                    popUpTo(0) { inclusive = true }
+                }
             })
         }
     }

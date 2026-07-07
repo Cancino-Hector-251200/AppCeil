@@ -33,7 +33,7 @@ import com.example.myapplceil.ui.theme.*
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit = {},
-    onLoginSuccess: () -> Unit = {}
+    onLoginSuccess: () -> Unit = {},
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

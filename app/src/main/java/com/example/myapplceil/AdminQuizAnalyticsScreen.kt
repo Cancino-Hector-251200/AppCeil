@@ -18,7 +18,7 @@ fun AdminQuizAnalyticsScreen() {
     val scrollState = rememberScrollState()
 
     Scaffold(
-        containerColor = BackgroundScreen
+        containerColor = NavyDark,
     ) { paddingValues ->
         Column(
             modifier = Modifier

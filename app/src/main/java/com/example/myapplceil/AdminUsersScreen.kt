@@ -1,6 +1,5 @@
 package com.example.myapplceil
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,7 +21,7 @@ data class AdminUserMock(
     val level: String,
     val streak: Int,
     val savings: Double,
-    val status: String
+    val status: String,
 )
 
 @Composable
@@ -36,7 +35,7 @@ fun AdminUsersScreen() {
     )
 
     Scaffold(
-        containerColor = BackgroundScreen
+        containerColor = NavyDark
     ) { paddingValues ->
         Column(
             modifier = Modifier

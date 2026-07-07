@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Payments
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,15 +34,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplceil.ui.theme.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     onNavigateToLogin: () -> Unit = {},
-    onRegisterSuccess: () -> Unit = {}
+    onRegisterSuccess: (Boolean) -> Unit = {} 
 ) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var isAdmin by remember { mutableStateOf(false) }
+    var expandedRol by remember { mutableStateOf(false) }
+    
+    val roles = listOf("Usuario", "Admin")
     val scrollState = rememberScrollState()
 
     Box(
@@ -121,6 +127,60 @@ fun RegisterScreen(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    // SECTOR DE ROL (Dropdown dinámico)
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Tipo de Usuario",
+                            color = MagentaNeon,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        ExposedDropdownMenuBox(
+                            expanded = expandedRol,
+                            onExpandedChange = { expandedRol = !expandedRol }
+                        ) {
+                            TextField(
+                                value = if (isAdmin) "Admin" else "Usuario",
+                                onValueChange = {},
+                                readOnly = true,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .menuAnchor()
+                                    .clip(RoundedCornerShape(8.dp)),
+                                leadingIcon = {
+                                    Icon(imageVector = Icons.Default.Group, contentDescription = null, tint = NavyDark)
+                                },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedRol) },
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.White,
+                                    unfocusedContainerColor = Color.White,
+                                    disabledContainerColor = Color.White,
+                                    focusedTextColor = Color.Black,
+                                    unfocusedTextColor = Color.Black,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent
+                                )
+                            )
+                            ExposedDropdownMenu(
+                                expanded = expandedRol,
+                                onDismissRequest = { expandedRol = false },
+                                modifier = Modifier.background(Color.White)
+                            ) {
+                                roles.forEach { rol ->
+                                    DropdownMenuItem(
+                                        text = { Text(rol, color = Color.Black) },
+                                        onClick = {
+                                            isAdmin = (rol == "Admin")
+                                            expandedRol = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     // Username Field
                     RegisterInputField(
                         label = "Nombre",
@@ -172,7 +232,7 @@ fun RegisterScreen(
 
                     // Action Button
                     Button(
-                        onClick = onRegisterSuccess,
+                        onClick = { onRegisterSuccess(isAdmin) },
                         colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
