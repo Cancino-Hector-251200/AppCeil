@@ -31,8 +31,7 @@ import com.example.myapplceil.ui.theme.*
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit = {},
-    onLogout: () -> Unit = {},
-    onNavigateToAdmin: () -> Unit = {}
+    onLogout: () -> Unit = {}
 ) {
     // Variables de estado
     var nombre by remember { mutableStateOf("Usuario Ceil") }
@@ -93,13 +92,13 @@ fun ProfileScreen(
                     )
                 }
                 
-                // Camera Icon Button (Para "agregar foto")
+                // Camera Icon Button
                 Box(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
                         .background(MagentaNeon)
-                        .clickable { /* Aquí iría la lógica para abrir la galería/cámara */ },
+                        .clickable { /* Lógica para abrir galería */ },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -159,7 +158,7 @@ fun ProfileScreen(
                         TextField(
                             value = sexo,
                             onValueChange = {},
-                            readOnly = true, // Solo lectura para forzar el uso del menú
+                            readOnly = true, 
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSexo) },
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
@@ -244,19 +243,7 @@ fun ProfileScreen(
                 Text("Guardar Cambios", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // --- BOTÓN DE ACCESO ADMIN (SOLO DEMO) ---
-            OutlinedButton(
-                onClick = onNavigateToAdmin,
-                modifier = Modifier.fillMaxWidth().height(55.dp),
-                border = BorderStroke(1.dp, BlueAdmin),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Panel Administrativo", color = BlueAdmin, fontWeight = FontWeight.Bold)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             TextButton(onClick = onLogout) {
                 Text("Cerrar Sesión", color = Color.Gray, fontWeight = FontWeight.SemiBold)

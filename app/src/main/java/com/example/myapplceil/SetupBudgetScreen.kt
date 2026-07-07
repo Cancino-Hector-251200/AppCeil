@@ -1,27 +1,28 @@
-package com.example.myapplceil 
+package com.example.myapplceil
+
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplceil.ui.theme.* // Importa tus colores personalizados
+import com.example.myapplceil.ui.theme.*
 
 @Composable
 fun SetupBudgetScreen(onSetupCompleto: (Double, Int) -> Unit) {
     var montoInput by remember { mutableStateOf("") }
     var semanasInput by remember { mutableStateOf("1") }
+    var showError by remember { mutableStateOf(false) }
 
-    // Surface asegura que el fondo sea el gris/blanco claro de tu Light Mode
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = BackgroundScreen
-        color =   NavyLight
+        color = NavyDark
     ) {
         Column(
             modifier = Modifier
@@ -32,63 +33,88 @@ fun SetupBudgetScreen(onSetupCompleto: (Double, Int) -> Unit) {
         ) {
             Text(
                 text = "Configura tus Finanzas",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = BlueDark // Título principal en azul marino
-                color = Color.White // Título principal en azul marino
+                fontSize = 26.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.White
             )
             Text(
-                text = "Ingresa tu dinero disponible y el tiempo que planeas administrarlo",
+                text = "Ingresa tu dinero disponible para comenzar",
                 fontSize = 14.sp,
-                color = Color.DarkGray, // Gris oscuro para que se lea en fondo claro
-                color = Color.White, // Gris oscuro para que se lea en fondo claro
+                color = Color.LightGray,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
                 value = montoInput,
-                onValueChange = { montoInput = it },
-                label = { Text("Monto Inicial ($)", color = BlueDark) },
-                label = { Text("Monto Inicial ($)", color = White) },
+                onValueChange = { 
+                    montoInput = it
+                    showError = false 
+                },
+                label = { Text("Monto Inicial ($)", color = Color.White) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                isError = showError,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = PinkMain, // La línea se vuelve magenta al escribir
-                    unfocusedBorderColor = Color.LightGray
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = MagentaNeon,
+                    unfocusedBorderColor = Color.LightGray,
+                    errorBorderColor = Color.Red
                 )
             )
+
+            if (showError) {
+                Text(
+                    text = "Por favor ingresa un monto válido mayor a 0",
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.Start).padding(top = 4.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = semanasInput,
                 onValueChange = { semanasInput = it },
-                label = { Text("¿Para cuántas semanas es?", color = BlueDark) },
-                label = { Text("¿Para cuántas semanas es?", color = White) },
+                label = { Text("¿Para cuántas semanas?", color = Color.White) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = PinkMain,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = MagentaNeon,
                     unfocusedBorderColor = Color.LightGray
                 )
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             Button(
                 onClick = {
                     val monto = montoInput.toDoubleOrNull() ?: 0.0
                     val semanas = semanasInput.toIntOrNull() ?: 1
+                    
                     if (monto > 0) {
                         onSetupCompleto(monto, semanas)
+                    } else {
+                        showError = true
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = PinkMain), // Botón fucsia brillante
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Comenzar a Registrar", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                Text(
+                    text = "Comenzar a Registrar", 
+                    fontSize = 18.sp, 
+                    fontWeight = FontWeight.Bold, 
+                    color = Color.White
+                )
             }
         }
     }

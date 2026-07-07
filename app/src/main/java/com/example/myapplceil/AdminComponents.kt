@@ -126,3 +126,23 @@ fun AdminSectionHeader(title: String, subtitle: String? = null) {
         }
     }
 }
+
+@Composable
+fun AdminChartCard(
+    title: String,
+    description: String,
+    content: @Composable () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = CardDark)
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text(text = title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(text = description, color = Color.Gray, fontSize = 12.sp)
+            Spacer(modifier = Modifier.height(20.dp))
+            content()
+        }
+    }
+}

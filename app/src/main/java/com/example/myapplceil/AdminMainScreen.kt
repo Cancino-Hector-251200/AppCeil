@@ -3,6 +3,7 @@ package com.example.myapplceil
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,10 +24,11 @@ fun AdminMainScreen(onExitAdmin: () -> Unit) {
     var currentScreen by remember { mutableStateOf<AdminScreen>(AdminScreen.Dashboard) }
 
     Scaffold(
+        containerColor = NavyDark,
         bottomBar = {
             NavigationBar(
                 containerColor = CardDark,
-                contentColor = Color.White
+                contentColor = Color.White,
             ) {
                 val items = listOf(
                     AdminScreen.Dashboard,
@@ -57,7 +59,7 @@ fun AdminMainScreen(onExitAdmin: () -> Unit) {
                 containerColor = Color.Red.copy(alpha = 0.8f),
                 contentColor = Color.White
             ) {
-                Icon(Icons.Default.ExitToApp, contentDescription = "Salir Admin")
+                Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Salir Admin")
             }
         }
     ) { paddingValues ->

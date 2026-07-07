@@ -28,21 +28,44 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplceil.ui.theme.*
 
+data class Debt(
+    val id: Int,
+    val name: String,
+    val amount: Double,
+    val isMeDeben: Boolean
+)
+
 @Composable
 fun DebtScreen(onBack: () -> Unit = {}) {
     var selectedTab by remember { mutableIntStateOf(0) }
+    var showAddSheet by remember { mutableStateOf(false) }
+    
+    // Lista dinámica de deudas
+    val debtsList = remember {
+        mutableStateListOf(
+            Debt(1, "Carlos", 120.0, true),
+            Debt(2, "Sofia", 250.0, true),
+            Debt(3, "Ximena", 230.0, true),
+            Debt(4, "Andres", 80.0, false),
+            Debt(5, "Tienda", 70.0, false)
+        )
+    }
+
+    // Cálculos de balance
+    val totalMeDeben = debtsList.filter { it.isMeDeben }.sumOf { it.amount }
+    val totalDebo = debtsList.filter { !it.isMeDeben }.sumOf { it.amount }
 
     Scaffold(
         containerColor = NavyDark,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { },
+                onClick = { showAddSheet = true },
                 containerColor = MagentaNeon,
                 contentColor = Color.White,
                 shape = CircleShape,
                 modifier = Modifier.shadow(15.dp, CircleShape, spotColor = MagentaNeon)
             ) {
-                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(30.dp))
+                Icon(Icons.Default.Add, contentDescription = "Agregar", modifier = Modifier.size(30.dp))
             }
         }
     ) { paddingValue ->
@@ -79,17 +102,23 @@ fun DebtScreen(onBack: () -> Unit = {}) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Column {
                             Text("Me deben", color = GreenNeon, fontSize = 13.sp)
-                            Text("$600", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+                            Text("$${totalMeDeben.toInt()}", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black)
                         }
                         Column(horizontalAlignment = Alignment.End) {
                             Text("Debo", color = RedNeon, fontSize = 13.sp)
-                            Text("$150", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+                            Text("$${totalDebo.toInt()}", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black)
                         }
                     }
                     HorizontalDivider(Modifier.padding(vertical = 16.dp), color = Color.White.copy(0.1f))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Resultado neto:", color = Color.White, fontWeight = FontWeight.Medium)
-                        Text("+$450", color = GreenNeon, fontSize = 18.sp, fontWeight = FontWeight.Black)
+                        val neto = totalMeDeben - totalDebo
+                        Text(
+                            text = (if (neto >= 0) "+" else "") + "$${neto.toInt()}", 
+                            color = if (neto >= 0) GreenNeon else RedNeon, 
+                            fontSize = 18.sp, 
+                            fontWeight = FontWeight.Black
+                        )
                     }
                 }
             }
@@ -114,17 +143,34 @@ fun DebtScreen(onBack: () -> Unit = {}) {
             Spacer(Modifier.height(20.dp))
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(bottom = 100.dp)) {
-                val mockData = if (selectedTab == 0) listOf("Carlos", "Sofia", "Ximena") else listOf("Andres", "Tienda")
-                items(mockData) { name ->
-                    DebtItemCard(name, isMeDeben = selectedTab == 0)
+                val filteredList = debtsList.filter { (selectedTab == 0 && it.isMeDeben) || (selectedTab == 1 && !it.isMeDeben) }
+                items(filteredList) { debt ->
+                    DebtItemCard(
+                        debt = debt, 
+                        onDelete = { debtsList.remove(debt) }
+                    )
                 }
             }
         }
     }
+
+    if (showAddSheet) {
+        AddDebtBottomSheet(
+            isMeDeben = selectedTab == 0,
+            onDismiss = { showAddSheet = false },
+            onSave = { name, amount ->
+                val doubleAmount = amount.toDoubleOrNull() ?: 0.0
+                if (name.isNotBlank() && doubleAmount > 0) {
+                    debtsList.add(Debt(debtsList.size + 1, name, doubleAmount, selectedTab == 0))
+                    showAddSheet = false
+                }
+            }
+        )
+    }
 }
 
 @Composable
-fun DebtItemCard(name: String, isMeDeben: Boolean) {
+fun DebtItemCard(debt: Debt, onDelete: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(containerColor = CardDark),
         shape = RoundedCornerShape(20.dp),
@@ -137,19 +183,19 @@ fun DebtItemCard(name: String, isMeDeben: Boolean) {
                 }
                 Spacer(Modifier.width(14.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(name, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                    Text(debt.name, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
                     Text("Pendiente", color = YellowNeon, fontSize = 12.sp)
                 }
                 Text(
-                    text = if(isMeDeben) "+$120" else "-$80", 
-                    color = if(isMeDeben) GreenNeon else RedNeon, 
-                    fontWeight = FontWeight.Black, 
+                    text = (if (debt.isMeDeben) "+" else "-") + "$${debt.amount.toInt()}",
+                    color = if (debt.isMeDeben) GreenNeon else RedNeon,
+                    fontWeight = FontWeight.Black,
                     fontSize = 18.sp
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
@@ -159,9 +205,62 @@ fun DebtItemCard(name: String, isMeDeben: Boolean) {
                     Icon(Icons.Default.Edit, "Editar", tint = Color.White.copy(0.6f), modifier = Modifier.size(20.dp))
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = { }, modifier = Modifier.size(32.dp)) {
+                IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
                     Icon(Icons.Default.Delete, "Eliminar", tint = RedNeon.copy(0.8f), modifier = Modifier.size(20.dp))
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddDebtBottomSheet(isMeDeben: Boolean, onDismiss: () -> Unit, onSave: (String, String) -> Unit) {
+    var name by remember { mutableStateOf("") }
+    var amount by remember { mutableStateOf("") }
+
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = CardDark) {
+        Column(modifier = Modifier.padding(24.dp).padding(bottom = 32.dp)) {
+            Text(
+                text = if (isMeDeben) "Nueva persona que me debe" else "Nueva deuda mía", 
+                color = Color.White, 
+                fontSize = 20.sp, 
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.height(16.dp))
+            OutlinedTextField(
+                value = name, 
+                onValueChange = { name = it }, 
+                label = { Text("Nombre de la persona") }, 
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MagentaNeon,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White
+                )
+            )
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = amount, 
+                onValueChange = { amount = it }, 
+                label = { Text("Monto ($)") }, 
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MagentaNeon,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White
+                )
+            )
+            Spacer(Modifier.height(24.dp))
+            Button(
+                onClick = { onSave(name, amount) }, 
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MagentaNeon),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Guardar Registro", fontWeight = FontWeight.Bold)
             }
         }
     }

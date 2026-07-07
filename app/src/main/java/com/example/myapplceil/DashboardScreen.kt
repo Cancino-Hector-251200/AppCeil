@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,6 +30,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplceil.ui.theme.*
 import kotlinx.coroutines.launch
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 
 data class Transaction(
     val id: Int,
@@ -41,12 +46,26 @@ data class Transaction(
 fun DashboardScreen(navController: NavController = rememberNavController()) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    var showAddExpenseSheet by remember { mutableStateOf(false) }
+    var showSurpriseTrivia by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(8000)
+        val chance = (1..2).random()
+        if (chance == 1) {
+            showSurpriseTrivia = true
+        }
+    }
 
     val transactions = listOf(
         Transaction(1, "Comidas", "$50", Color.Red),
         Transaction(2, "Transporte", "$20", Color.Cyan),
         Transaction(3, "Suscripción", "$15", Color.Green),
-        Transaction(4, "Entretenimiento", "$40", Color.Yellow)
+        Transaction(4, "Entretenimiento", "$40", Color.Yellow),
+        Transaction(5, "Gimnasio", "$30", Color.Blue),
+        Transaction(6, "Regalos", "$100", Color.Magenta)
     )
 
     ModalNavigationDrawer(
@@ -89,6 +108,24 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                         drawerState.close()
                         navController.navigate("apartments")
                     }
+                },
+                onNavigateToHelp = {
+                    scope.launch {
+                        drawerState.close()
+                        val intent = Intent(Intent.ACTION_SENDTO).apply {
+                            data = Uri.parse("mailto:ceilsoporte4@gmail.com")
+                            putExtra(Intent.EXTRA_SUBJECT, "Queja o Duda - Usuario CEIL")
+                        }
+                        context.startActivity(Intent.createChooser(intent, "Enviar correo con..."))
+                    }
+                },
+                onLogout = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate("login") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
                 }
             )
         }
@@ -108,7 +145,7 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { /* Add Action */ },
+                    onClick = { showAddExpenseSheet = true },
                     containerColor = MagentaNeon,
                     contentColor = Color.White,
                     shape = CircleShape
@@ -117,49 +154,83 @@ fun DashboardScreen(navController: NavController = rememberNavController()) {
                 }
             }
         ) { paddingValues ->
-            Column(
+            // USAMOS UN SOLO LAZYCOLUMN PARA QUE TODA LA VISTA SEA SCROLLABLE
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                MoneyCard()
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // SECCIÓN DE ACCESO RÁPIDO A APARTADOS
-                Text(text = "Accesos rápidos", color = Color.Gray, fontSize = 14.sp)
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    QuickAccessCard(
-                        title = "Apartados",
-                        icon = Icons.Default.Folder,
-                        color = PurpleNeon,
-                        modifier = Modifier.weight(1f),
-                        onClick = { navController.navigate("apartments") }
-                    )
-                    QuickAccessCard(
-                        title = "Gráficas",
-                        icon = Icons.Default.PieChart,
-                        color = MagentaNeon,
-                        modifier = Modifier.weight(1f),
-                        onClick = { navController.navigate("graphics") }
-                    )
+                // Tarjeta de Dinero
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    MoneyCard()
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(text = "Historial", color = MagentaNeon, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(16.dp))
-
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(transactions) { transaction ->
-                        TransactionItem(transaction)
+                // Accesos Rápidos
+                item {
+                    Text(text = "Accesos rápidos", color = Color.Gray, fontSize = 14.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        QuickAccessCard(
+                            title = "Apartados",
+                            icon = Icons.Default.Folder,
+                            color = PurpleNeon,
+                            modifier = Modifier.weight(1f),
+                            onClick = { navController.navigate("apartments") }
+                        )
+                        QuickAccessCard(
+                            title = "Gráficas",
+                            icon = Icons.Default.PieChart,
+                            color = MagentaNeon,
+                            modifier = Modifier.weight(1f),
+                            onClick = { navController.navigate("graphics") }
+                        )
                     }
                 }
+
+                // Título del Historial
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(text = "Historial", color = MagentaNeon, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                }
+
+                // Lista de Transacciones (Ahora fluyen con el scroll general)
+                items(transactions) { transaction ->
+                    TransactionItem(transaction)
+                }
+
+                // Espacio extra al final para que el FAB no tape el último elemento
+                item {
+                    Spacer(modifier = Modifier.height(80.dp))
+                }
             }
+        }
+    }
+
+    if (showAddExpenseSheet) {
+        AddExpenseBottomSheet(
+            onDismiss = { showAddExpenseSheet = false },
+            onSaveExpense = { titulo, categoria, monto, desc ->
+                println("Gasto guardado: $titulo, Categoría: $categoria, Monto: $$monto, Descripción: $desc")
+                showAddExpenseSheet = false
+            }
+        )
+    }
+
+    if (showSurpriseTrivia) {
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = { showSurpriseTrivia = false },
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            DailyTriviaScreen(
+                onBack = { showSurpriseTrivia = false },
+                onFinish = { showSurpriseTrivia = false }
+            )
         }
     }
 }
@@ -208,7 +279,7 @@ fun MoneyCard() {
                 }
                 IconButton(onClick = { isExpanded = !isExpanded }) {
                     Icon(
-                        imageVector = Icons.Default.Settings,
+                        imageVector = Icons.Default.Edit, // CAMBIADO: Engranaje por Lápiz
                         contentDescription = "Editar",
                         tint = if (isExpanded) MagentaNeon else Color.LightGray
                     )
@@ -368,7 +439,9 @@ fun CeilDrawerContent(
     onNavigateToProfile: () -> Unit,
     onNavigateToTerms: () -> Unit,
     onNavigateToMedals: () -> Unit,
-    onNavigateToApartments: () -> Unit
+    onNavigateToApartments: () -> Unit,
+    onNavigateToHelp: () -> Unit,
+    onLogout: () -> Unit
 ) {
     ModalDrawerSheet(
         drawerContainerColor = NavyDark,
@@ -393,6 +466,12 @@ fun CeilDrawerContent(
         CeilDrawerItem(icon = Icons.Default.PieChart, label = "Gráficas", onClick = onNavigateToGraphics)
         CeilDrawerItem(icon = Icons.Default.Folder, label = "Apartados", onClick = onNavigateToApartments)
         CeilDrawerItem(icon = Icons.Default.PrivacyTip, label = "Privacidad", onClick = onNavigateToTerms)
+        
+        Spacer(modifier = Modifier.weight(1f))
+        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
+        CeilDrawerItem(icon = Icons.AutoMirrored.Filled.Help, label = "Ayuda", onClick = onNavigateToHelp)
+        CeilDrawerItem(icon = Icons.AutoMirrored.Filled.ExitToApp, label = "Cerrar sesión", onClick = onLogout)
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
